@@ -1,5 +1,5 @@
-// server.js
-
+const appointmentRoutes = require('./routes/appointments');
+const campaignRoutes = require('./routes/campaigns');
 const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
@@ -23,7 +23,8 @@ app.set("views", path.join(__dirname, "views")); // Dossier des vues
 
 app.use(express.urlencoded({ extended: true })); // Pour lire les données de formulaire
 app.use(express.static(path.join(__dirname, "public"))); // Fichiers statiques (CSS, images, JS)
-
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/campaigns', campaignRoutes);
 // 3. Configuration des sessions
 app.use(session({
   secret: "mon_secret_don_sang",
