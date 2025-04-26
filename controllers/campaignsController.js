@@ -1,4 +1,4 @@
-const Campaign = require('../models/Campaign');
+const Campaign = require('../models/campaign');
 
 // Liste toutes les campagnes
 exports.getAllCampaigns = async (req, res) => {
