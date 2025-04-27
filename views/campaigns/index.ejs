@@ -9,7 +9,15 @@
         Date : du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %><br>
         Horaire : <%= campaign.startTime %> - <%= campaign.endTime %><br>
         Lieu : <%= campaign.location %><br><br>
+
+        <!-- 🔥 Le bouton Voir Détail ici -->
+        <a href="/api/campaigns/<%= campaign._id %>">
+          <button>Voir Détail</button>
+        </a>
+        
+        </a>
       </li>
+      <hr>
     <% }) %>
   </ul>
 <% } else { %>

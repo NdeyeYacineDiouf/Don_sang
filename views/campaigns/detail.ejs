@@ -1,0 +1,24 @@
+<h1><%= campaign.title %></h1>
+<p><strong>Description :</strong> <%= campaign.description %></p>
+<p><strong>Lieu :</strong> <%= campaign.location %></p>
+<p><strong>Date :</strong> du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %></p>
+<p><strong>Horaire :</strong> <%= campaign.startTime %> - <%= campaign.endTime %></p>
+
+<h3>Créneaux disponibles :</h3>
+<ul>
+  <% slots.forEach(slot => { %>
+    <li>
+      📅 <%= slot.date.toLocaleDateString() %> de 🕑 <%= slot.startTime %> à <%= slot.endTime %> 
+      - Places restantes : <%= campaign.maxPeoplePerSlot - slot.reserved %>
+      <% if ((campaign.maxPeoplePerSlot - slot.reserved) > 0) { %>
+        <button>Réserver</button>
+      <% } else { %>
+        <span style="color:red;">Complet</span>
+      <% } %>
+    </li>
+  <% }) %>
+</ul>
+
+<a href="/api/campaigns">
+  <button>Retour à la liste</button>
+</a>
