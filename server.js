@@ -8,6 +8,8 @@ const path = require("path");
 const authRoutes = require("./routes/authRoutes");
 const appointmentRoutes = require('./routes/appointments');
 const campaignRoutes = require('./routes/campaigns');
+const adminAuthRoutes = require("./routes/admin/adminAuthRoutes");
+const adminCampaignRoutes = require("./routes/admin/adminCampaignRoutes");
 
 const app = express();
 
@@ -25,9 +27,22 @@ app.set("views", path.join(__dirname, "views")); // Dossier views
 app.use(layouts); // Activer express-ejs-layouts
 app.set("layout", "layout"); // Utiliser views/layout.ejs par défaut
 
+app.use((req, res, next) => {
+  if (req.path.startsWith('/admin')) {
+    res.locals.layout = "adminLayout"; // Layout spécial pour admin
+  } else {
+    res.locals.layout = "layout"; // Layout normal pour clients
+  }
+  next();
+});
+
 // Middlewares
 app.use(express.urlencoded({ extended: true })); // Lire les formulaires
 app.use(express.static(path.join(__dirname, "public"))); // Fichiers statiques (images, css, js)
+
+const methodOverride = require("method-override");
+app.use(methodOverride('_method'));
+
 
 // 3. Sessions
 app.use(session({
@@ -53,6 +68,8 @@ app.get("/", (req, res) => {
 // Routes API
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/campaigns', campaignRoutes);
+app.use("/admin", adminAuthRoutes);
+app.use("/admin", adminCampaignRoutes);
 
 // Routes Auth
 app.use("/", authRoutes);

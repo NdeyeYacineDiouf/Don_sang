@@ -6,8 +6,26 @@ const campaignSchema = new mongoose.Schema({
     required: true
   },
   description: String,
-  date: Date,
-  location: String
+  startDate: {
+    type: Date,
+    required: true
+  },
+  endDate: {
+    type: Date,
+    required: true
+  },
+  startTime: {
+    type: String,
+    required: true
+  },
+  endTime: {
+    type: String,
+    required: true
+  },
+  location: {
+    type: String,
+    required: true
+  }
 }, { timestamps: true });
 
 const Campaign = mongoose.model("Campaign", campaignSchema);

@@ -1,0 +1,26 @@
+<h2>Créer une nouvelle campagne</h2>
+
+<form action="/admin/campaigns" method="POST">
+
+  <label>Titre :</label>
+  <input type="text" name="title" required> 
+
+  <label>Description :</label>
+  <textarea name="description"></textarea>
+
+  <label>Date de début :</label>
+  <input type="date" name="startDate" required> 
+
+  <label>Date de fin :</label>
+  <input type="date" name="endDate" required> 
+
+  <label>Heure de début :</label>
+  <input type="time" name="startTime" required> 
+
+  <label>Heure de fin :</label>
+  <input type="time" name="endTime" required> 
+  <label>Lieu :</label>
+  <input type="text" name="location" required> 
+
+  <button type="submit" style="margin-top: 15px;">Créer la campagne</button>
+</form>

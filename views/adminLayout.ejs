@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - <%= pageTitle %></title>
+</head>
+<body>
+
+  <nav style="background-color: darkred; color: white; padding: 10px;">
+    <h2>Tableau de Bord Admin</h2>
+    <a href="/admin/dashboard">Dashboard</a> |
+    <a href="/admin/logout">Se déconnecter</a>
+  </nav>
+
+  <main style="padding: 20px;">
+    <%- body %>
+  </main>
+
+</body>
+</html>

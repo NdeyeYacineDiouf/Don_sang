@@ -1,0 +1,27 @@
+<h2>Modifier la Campagne</h2>
+
+<form action="/admin/campaigns/<%= campaign._id %>" method="POST">
+
+  <label>Titre :</label>
+  <input type="text" name="title" value="<%= campaign.title %>" required>
+
+  <label>Description :</label>
+  <textarea name="description"><%= campaign.description %></textarea>
+
+  <label>Date de début :</label>
+  <input type="date" name="startDate" value="<%= campaign.startDate.toISOString().substr(0, 10) %>" required>
+
+  <label>Date de fin :</label>
+  <input type="date" name="endDate" value="<%= campaign.endDate.toISOString().substr(0, 10) %>" required>
+
+  <label>Heure de début :</label>
+  <input type="time" name="startTime" value="<%= campaign.startTime %>" required>
+
+  <label>Heure de fin :</label>
+  <input type="time" name="endTime" value="<%= campaign.endTime %>" required>
+
+  <label>Lieu :</label>
+  <input type="text" name="location" value="<%= campaign.location %>" required>
+
+  <button type="submit" style="margin-top: 15px;">Mettre à jour</button>
+</form>

@@ -1,11 +1,17 @@
-<h1>Liste des Campagnes de Don de Sang</h1>
+<h2>Liste des Campagnes Disponibles</h2>
 
-<!-- Bouton pour revenir à l'accueil -->
-<a href="/">
-  <button style="margin-bottom: 20px; padding: 10px 20px;">Retour Accueil</button>
-</a>
-
-<!-- Ici on affichera les campagnes -->
-<div>
-  <p>Aucune campagne pour le moment.</p>
-</div>
+<% if (campaigns.length > 0) { %>
+  <ul>
+    <% campaigns.forEach(campaign => { %>
+      <li>
+        <strong><%= campaign.title %></strong><br>
+        Description : <%= campaign.description %><br>
+        Date : du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %><br>
+        Horaire : <%= campaign.startTime %> - <%= campaign.endTime %><br>
+        Lieu : <%= campaign.location %><br><br>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>Aucune campagne disponible pour l'instant.</p>
+<% } %>
