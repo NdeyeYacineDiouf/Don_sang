@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title><%= pageTitle || "Don de Sang" %></title>
+</head>
+<body>
+
+  <!-- Navbar directement ici -->
+  <nav style="background-color: #f8f8f8; padding: 10px;">
+    <a href="/">Accueil</a>
+
+    <% if (isLoggedIn) { %>
+      <a href="/logout" style="float: right;">Se déconnecter</a>
+    <% } else { %>
+      <a href="/login" style="float: right;">Se connecter</a>
+      <a href="/signup" style="float: right; margin-right: 10px;">Créer un compte</a>
+    <% } %>
+  </nav>
+
+  <!-- Notification -->
+  <% if (notification) { %>
+    <p style="color: green;"><%= notification %></p>
+  <% } %>
+
+  <!-- Contenu spécifique à chaque page -->
+  <%- body %>
+
+</body>
+</html>

@@ -7,7 +7,7 @@ exports.signupForm = (req, res) => {
 
 /// Afficher le formulaire d'inscription
 exports.signupForm = (req, res) => {
-  res.render("auth/signup");  // 🔥 CHEMIN corrigé
+  res.render("auth/signup", { pageTitle: "Inscription - Don de Sang" });
 };
 
 // Inscrire un utilisateur
@@ -31,7 +31,7 @@ exports.signup = async (req, res) => {
 
 // Afficher le formulaire de connexion
 exports.loginForm = (req, res) => {
-  res.render("auth/login");  // 🔥 CHEMIN corrigé
+  res.render("auth/login", { pageTitle: "Connexion - Don de Sang" });
 };
 
 // Connecter l'utilisateur

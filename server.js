@@ -1,11 +1,13 @@
-const appointmentRoutes = require('./routes/appointments');
-const campaignRoutes = require('./routes/campaigns');
 const express = require("express");
+const layouts = require("express-ejs-layouts");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const path = require("path");
 
+// Importer les routes
 const authRoutes = require("./routes/authRoutes");
+const appointmentRoutes = require('./routes/appointments');
+const campaignRoutes = require('./routes/campaigns');
 
 const app = express();
 
@@ -17,41 +19,45 @@ mongoose.connect("mongodb://localhost:27017/don_sang", {
 .then(() => console.log("✅ Connexion réussie à MongoDB !"))
 .catch(err => console.error("❌ Erreur MongoDB :", err));
 
-// 2. Configuration d'Express
-app.set("view engine", "ejs"); // EJS comme moteur de templates
-app.set("views", path.join(__dirname, "views")); // Dossier des vues
+// 2. Configuration Express + Layouts
+app.set("view engine", "ejs"); // Utiliser EJS
+app.set("views", path.join(__dirname, "views")); // Dossier views
+app.use(layouts); // Activer express-ejs-layouts
+app.set("layout", "layout"); // Utiliser views/layout.ejs par défaut
 
-app.use(express.urlencoded({ extended: true })); // Pour lire les données de formulaire
-app.use(express.static(path.join(__dirname, "public"))); // Fichiers statiques (CSS, images, JS)
-app.use('/api/appointments', appointmentRoutes);
-app.use('/api/campaigns', campaignRoutes);
-// 3. Configuration des sessions
+// Middlewares
+app.use(express.urlencoded({ extended: true })); // Lire les formulaires
+app.use(express.static(path.join(__dirname, "public"))); // Fichiers statiques (images, css, js)
+
+// 3. Sessions
 app.use(session({
   secret: "mon_secret_don_sang",
   resave: false,
   saveUninitialized: false
 }));
-// Ajout d'une variable globale pour savoir si connecté
-app.use((req, res, next) => {
-    res.locals.isLoggedIn = !!req.session.userId; // true si connecté, false sinon
-    next();
-  });
 
- // Middleware pour envoyer la notification aux vues et la supprimer après affichage
+// 4. Variables disponibles dans toutes les vues
 app.use((req, res, next) => {
-  res.locals.notification = req.session.notification || null;
-  delete req.session.notification;
+  res.locals.isLoggedIn = !!req.session.userId; // connecté ou pas
+  res.locals.notification = req.session.notification || null; // messages
+  delete req.session.notification; // effacer après affichage
   next();
 });
 
-// 4. Routes
+// 5. Définir les routes
 app.get("/", (req, res) => {
-  res.render("home"); // Vue Accueil
+  res.render("home", { pageTitle: "Accueil - Don de Sang" });
 });
 
-app.use("/", authRoutes); // Routes d'authentification (login, signup, logout)
 
-// 5. Lancer le serveur
+// Routes API
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/campaigns', campaignRoutes);
+
+// Routes Auth
+app.use("/", authRoutes);
+
+// 6. Démarrer le serveur
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
