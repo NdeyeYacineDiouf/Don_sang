@@ -1,9 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const campaignsController = require('../controllers/campaignsController');
+const isAuthenticated = require("../middlewares/authMiddleware");
 
-// Routes publiques
-router.get('/', campaignsController.getAllCampaigns);
-router.get('/:id', campaignsController.getCampaignById);
+// Afficher la page des campagnes
+router.get("/", isAuthenticated, (req, res) => {
+  res.render("campaigns/index", { pageTitle: "Liste des Campagnes" });
+});
 
 module.exports = router;

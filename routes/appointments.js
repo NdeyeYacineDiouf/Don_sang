@@ -1,9 +1,10 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const appointmentsController = require('../controllers/appointmentsController');
-const authMiddleware = require('../middlewares/authMiddleware'); // si tu as de l'authentification
+const isAuthenticated = require("../middlewares/authMiddleware");
 
-// Route pour inscrire un utilisateur à une campagne
-router.post('/', authMiddleware, appointmentsController.createAppointment);
+// Afficher la page des rendez-vous
+router.get("/", isAuthenticated, (req, res) => {
+  res.render("appointment/index", { pageTitle: "Mes Rendez-vous" });
+});
 
 module.exports = router;

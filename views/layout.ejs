@@ -9,7 +9,8 @@
   <!-- Navbar directement ici -->
   <nav style="background-color: #f8f8f8; padding: 10px;">
     <a href="/">Accueil</a>
-
+    <a href="/api/appointments" style="margin-left: 15px;">Don de Sang</a>
+  
     <% if (isLoggedIn) { %>
       <a href="/logout" style="float: right;">Se déconnecter</a>
     <% } else { %>
@@ -17,6 +18,7 @@
       <a href="/signup" style="float: right; margin-right: 10px;">Créer un compte</a>
     <% } %>
   </nav>
+  
 
   <!-- Notification -->
   <% if (notification) { %>
