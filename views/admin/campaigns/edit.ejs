@@ -23,5 +23,8 @@
   <label>Lieu :</label>
   <input type="text" name="location" value="<%= campaign.location %>" required>
 
+  <label>Nombre maximum de personnes par créneau :</label>
+  <input type="number" name="maxPeoplePerSlot" value="<%= campaign.maxPeoplePerSlot %>" required min="1">
+
   <button type="submit" style="margin-top: 15px;">Mettre à jour</button>
 </form>

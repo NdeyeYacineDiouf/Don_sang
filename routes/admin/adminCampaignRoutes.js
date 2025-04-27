@@ -3,7 +3,7 @@ const router = express.Router();
 const isAdmin = require("../../middlewares/isAdmin");
 const Campaign = require("../../models/campaign");
 
-// Afficher le formulaire de création
+// ➡️ Afficher le formulaire de création de campagne
 router.get("/campaigns/new", isAdmin, (req, res) => {
   res.render("admin/campaigns/new", { 
     pageTitle: "Nouvelle Campagne", 
@@ -11,10 +11,10 @@ router.get("/campaigns/new", isAdmin, (req, res) => {
   });
 });
 
-// Enregistrer une nouvelle campagne
+// ➡️ Enregistrer une nouvelle campagne
 router.post("/campaigns", isAdmin, async (req, res) => {
   try {
-    const { title, description, startDate, endDate, startTime, endTime, location } = req.body;
+    const { title, description, startDate, endDate, startTime, endTime, location, maxPeoplePerSlot } = req.body;
     
     const newCampaign = new Campaign({
       title,
@@ -23,18 +23,21 @@ router.post("/campaigns", isAdmin, async (req, res) => {
       endDate,
       startTime,
       endTime,
-      location
+      location,
+      maxPeoplePerSlot
     });
 
     await newCampaign.save();
-    res.redirect("/admin/dashboard"); // ou la liste des campagnes
+
+    req.session.notification = "✅ Campagne créée avec succès";
+    res.redirect("/admin/campaigns/manage"); // Redirige vers la liste
   } catch (err) {
     console.error(err);
     res.send("Erreur lors de la création de la campagne");
   }
 });
 
-// Formulaire de modification d'une campagne
+// ➡️ Afficher le formulaire de modification d'une campagne
 router.get("/campaigns/:id/edit", isAdmin, async (req, res) => {
   try {
     const campaign = await Campaign.findById(req.params.id);
@@ -52,10 +55,10 @@ router.get("/campaigns/:id/edit", isAdmin, async (req, res) => {
   }
 });
 
-// Soumettre les modifications
+// ➡️ Soumettre les modifications d'une campagne
 router.post("/campaigns/:id", isAdmin, async (req, res) => {
   try {
-    const { title, description, startDate, endDate, startTime, endTime, location } = req.body;
+    const { title, description, startDate, endDate, startTime, endTime, location, maxPeoplePerSlot } = req.body;
     
     await Campaign.findByIdAndUpdate(req.params.id, {
       title,
@@ -64,17 +67,19 @@ router.post("/campaigns/:id", isAdmin, async (req, res) => {
       endDate,
       startTime,
       endTime,
-      location
+      location,
+      maxPeoplePerSlot
     });
 
-    res.redirect("/admin/dashboard"); // ou vers la liste des campagnes admin
+    req.session.notification = "✅ Campagne mise à jour avec succès";
+    res.redirect("/admin/campaigns/manage");
   } catch (err) {
     console.error(err);
     res.send("Erreur lors de la mise à jour de la campagne");
   }
 });
 
-// Page pour gérer (modifier/supprimer) les campagnes
+// ➡️ Page pour gérer (modifier/supprimer) toutes les campagnes
 router.get("/campaigns/manage", isAdmin, async (req, res) => {
   try {
     const campaigns = await Campaign.find();
@@ -89,11 +94,11 @@ router.get("/campaigns/manage", isAdmin, async (req, res) => {
   }
 });
 
-// Supprimer une campagne
+// ➡️ Supprimer une campagne
 router.delete("/campaigns/:id", isAdmin, async (req, res) => {
   try {
     await Campaign.findByIdAndDelete(req.params.id);
-    req.session.notification = "Campagne supprimée avec succès ✅";
+    req.session.notification = "✅ Campagne supprimée avec succès";
     res.redirect("/admin/campaigns/manage");
   } catch (err) {
     console.error(err);
