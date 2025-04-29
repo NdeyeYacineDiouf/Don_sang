@@ -1,81 +1,90 @@
-const express = require("express");
-const layouts = require("express-ejs-layouts");
-const mongoose = require("mongoose");
-const session = require("express-session");
-const path = require("path");
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const session = require('express-session');
+const passport = require('passport');
+const flash = require('connect-flash');
+const MongoStore = require('connect-mongo');
+const cookieParser = require('cookie-parser');
+const engine = require('ejs-mate');
+const path = require('path');
+const errorHandler = require('./middlewares/errorHandler');
+const cron = require('node-cron');
+const sendReminders = require('./scripts/sendReminders');
+const expressLayouts = require('express-ejs-layouts');
 
-// Importer les routes
-const authRoutes = require("./routes/authRoutes");
-const appointmentRoutes = require('./routes/appointments');
-const campaignRoutes = require('./routes/campaigns');
-const adminAuthRoutes = require("./routes/admin/adminAuthRoutes");
-const adminCampaignRoutes = require("./routes/admin/adminCampaignRoutes");
-
+// Create Express app
 const app = express();
 
-// 1. Connexion à MongoDB
-mongoose.connect("mongodb://localhost:27017/don_sang", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
+// Database connection
+mongoose.connect(process.env.MONGODB_URI, {
+  serverSelectionTimeoutMS: 5000  // Timeout après 5s
 })
-.then(() => console.log("✅ Connexion réussie à MongoDB !"))
-.catch(err => console.error("❌ Erreur MongoDB :", err));
+.then(() => console.log('Connecté à MongoDB avec succès'))
+.catch(err => {
+  console.error('Échec de connexion MongoDB:', err);
+  process.exit(1);  // Quitte l'application si la connexion échoue
+});
 
-// 2. Configuration Express + Layouts
-app.set("view engine", "ejs"); // Utiliser EJS
-app.set("views", path.join(__dirname, "views")); // Dossier views
-app.use(layouts); // Activer express-ejs-layouts
-app.set("layout", "layout"); // Utiliser views/layout.ejs par défaut
-
-app.use((req, res, next) => {
-  if (req.path.startsWith('/admin')) {
-    res.locals.layout = "adminLayout"; // Layout spécial pour admin
-  } else {
-    res.locals.layout = "layout"; // Layout normal pour clients
-  }
-  next();
+// Tous les jours à 9h
+cron.schedule('0 9 * * *', () => {
+  console.log('Envoi des rappels...');
+  sendReminders().then(() => console.log('Rappels envoyés !'));
 });
 
 // Middlewares
-app.use(express.urlencoded({ extended: true })); // Lire les formulaires
-app.use(express.static(path.join(__dirname, "public"))); // Fichiers statiques (images, css, js)
+app.use(express.json());
 
-const methodOverride = require("method-override");
-app.use(methodOverride('_method'));
+app.use(expressLayouts);
+app.set('layout', 'layout');
 
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-// 3. Sessions
+//middleware gestion de session
 app.use(session({
-  secret: "mon_secret_don_sang",
+  secret: process.env.SESSION_SECRET,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  store: MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+  cookie: { maxAge: 24 * 60 * 60 * 1000 } // 1 day
 }));
 
-// 4. Variables disponibles dans toutes les vues
+//Flash middleware
+app.use(flash());
+//middleware pour injection de messages flash dans les vues
 app.use((req, res, next) => {
-  res.locals.isLoggedIn = !!req.session.userId; // connecté ou pas
-  res.locals.notification = req.session.notification || null; // messages
-  delete req.session.notification; // effacer après affichage
+  res.locals.success_msg = req.flash('success_msg') || '';
+  res.locals.error_msg = req.flash('error_msg') || '';
+  res.locals.error = req.flash('error') || '';
+  res.locals.user = req.user || null; //pour user injection
   next();
 });
 
-// 5. Définir les routes
-app.get("/", (req, res) => {
-  res.render("home", { pageTitle: "Accueil - Don de Sang" });
-});
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
 
+app.engine('ejs', engine);
+// View engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
-// Routes API
-app.use('/api/appointments', appointmentRoutes);
-app.use('/api/campaigns', campaignRoutes);
-app.use("/admin", adminAuthRoutes);
-app.use("/admin", adminCampaignRoutes);
+// Routes
+app.use('/', require('./routes/auth'));
+app.use('/', require('./routes/campaigns'));
+app.use('/appointments', require('./routes/appointments'));
+app.use('/profile', require('./routes/profile'));
+app.use('/admin', require('./routes/admin/auth'));
+app.use('/admin/campaigns', require('./routes/admin/campaigns'));
+app.use('/api', require('./routes/api/appointments'));
 
-// Routes Auth
-app.use("/", authRoutes);
+// Error handling
+app.use(errorHandler.notFound);  // Doit être après toutes les routes
+app.use(errorHandler.validationError);  // Gère spécifiquement les erreurs de validation
+app.use(errorHandler.serverError);  // Doit être le dernier middleware
 
-// 6. Démarrer le serveur
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur démarré sur http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

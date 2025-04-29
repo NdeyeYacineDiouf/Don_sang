@@ -1,25 +1,34 @@
-<h2>Liste des Campagnes Disponibles</h2>
+<% layout('layout') %>
 
-<% if (campaigns.length > 0) { %>
-  <ul>
-    <% campaigns.forEach(campaign => { %>
-      <li>
-        <strong><%= campaign.title %></strong><br>
-        Description : <%= campaign.description %><br>
-        Date : du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %><br>
-        Horaire : <%= campaign.startTime %> - <%= campaign.endTime %><br>
-        Lieu : <%= campaign.location %><br><br>
+<div class="campaigns-list">
+  <h1>Campagnes de Don de Sang</h1>
+  
+  <% if (campaigns.length > 0) { %>
+    <div class="campaigns-grid">
+      <% campaigns.forEach(campaign => { %>
+        <div class="campaign-card">
+          <div class="campaign-header">
+            <h3><%= campaign.title %></h3>
+            <span class="date-badge">
+              <%= campaign.startDate.toLocaleDateString() %> - <%= campaign.endDate.toLocaleDateString() %>
+            </span>
+          </div>
+          
+          <div class="campaign-body">
+            <p><%= campaign.description.substring(0, 100) %>...</p>
+            <p><i class="fas fa-map-marker-alt"></i> <%= campaign.bloodBank.location.address %></p>
+          </div>
 
-        <!-- 🔥 Le bouton Voir Détail ici -->
-        <a href="/api/campaigns/<%= campaign._id %>">
-          <button>Voir Détail</button>
-        </a>
-        
-        </a>
-      </li>
-      <hr>
-    <% }) %>
-  </ul>
-<% } else { %>
-  <p>Aucune campagne disponible pour l'instant.</p>
-<% } %>
+          <div class="campaign-footer">
+            <a href="/campaigns/<%= campaign._id %>" class="btn btn-primary">Voir détails</a>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } else { %>
+    <div class="empty-state">
+      <i class="fas fa-heartbeat"></i>
+      <p>Aucune campagne disponible pour le moment</p>
+    </div>
+  <% } %>
+</div>

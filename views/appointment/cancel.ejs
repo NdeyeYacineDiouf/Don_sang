@@ -1,0 +1,21 @@
+<%- include('../layout') %>
+
+<div class="appointment-cancel">
+  <h1>Annuler un Rendez-vous</h1>
+  
+  <div class="appointment-info">
+    <p><strong>Campagne :</strong> <%= appointment.campaign.title %></p>
+    <p><strong>Date :</strong> <%= appointment.slot.date.toLocaleDateString() %></p>
+    <p><strong>Heure :</strong> <%= appointment.slot.startTime %> - <%= appointment.slot.endTime %></p>
+  </div>
+
+  <form action="/appointments/<%= appointment._id %>/cancel" method="POST">
+    <div class="form-group">
+      <label for="reason">Raison de l'annulation</label>
+      <textarea id="reason" name="reason" required></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-danger">Confirmer l'annulation</button>
+    <a href="/appointments" class="btn">Retour</a>
+  </form>
+</div>

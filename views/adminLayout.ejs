@@ -2,19 +2,38 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Admin - <%= pageTitle %></title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - <%= pageTitle || 'Don de Sang' %></title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
-<body>
+<body class="admin">
+  <header class="admin-header">
+    <nav>
+      <div class="admin-brand">
+        <a href="/admin/dashboard">
+          <i class="fas fa-heartbeat"></i> Admin Don de Sang
+        </a>
+      </div>
+      
+      <ul class="admin-nav-links">
+        <li><a href="/admin/dashboard">Dashboard</a></li>
+        <li><a href="/admin/campaigns">Campagnes</a></li>
+        <li><a href="/admin/stats">Statistiques</a></li>
+        <li><a href="/admin/logout">Déconnexion</a></li>
+      </ul>
+    </nav>
+  </header>
 
-  <nav style="background-color: darkred; color: white; padding: 10px;">
-    <h2>Tableau de Bord Admin</h2>
-    <a href="/admin/dashboard">Dashboard</a> |
-    <a href="/admin/logout">Se déconnecter</a>
-  </nav>
-
-  <main style="padding: 20px;">
+  <main class="admin-main">
+    <%- include('../partials/flashMessages') %>
     <%- body %>
   </main>
 
+  <footer class="admin-footer">
+    <p>&copy; <%= new Date().getFullYear() %> Plateforme de Don de Sang - Admin</p>
+  </footer>
+
+  <script src="/js/main.js"></script>
 </body>
 </html>

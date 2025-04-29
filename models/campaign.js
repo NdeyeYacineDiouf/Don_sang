@@ -1,16 +1,55 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const campaignSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title: {
+    type: String,
+    required: true
+  },
   description: String,
-  startDate: { type: Date, required: true },
-  endDate: { type: Date, required: true },
-  startTime: { type: String, required: true },
-  endTime: { type: String, required: true },
-  location: { type: String, required: true },
-  maxPeoplePerSlot: { type: Number, required: true } // <= ici
+  bloodBank: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BloodBank',
+    required: true
+  },
+  startDate: {
+    type: Date,
+    required: true
+  },
+  endDate: {
+    type: Date,
+    required: true
+  },
+  eligibilityCriteria: [String],
+  timeSlots: [{
+    date: Date,
+    startTime: String,
+    endTime: String,
+    maxDonors: Number,
+    availableSlots: Number
+  }],
+  status: {
+    type: String,
+    enum: ['draft', 'active', 'completed', 'cancelled'],
+    default: 'draft'
+  },
+  targetDonations: Number,
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Admin'
+  }
 }, { timestamps: true });
 
-const Campaign = mongoose.model("Campaign", campaignSchema);
+// Validation
+campaignSchema.pre('save', function (next) {
+  if (this.endDate < this.startDate) {
+    throw new Error('End date must be after start date');
+  }
+  next();
+});
 
-module.exports = Campaign;
+// Indexes
+campaignSchema.index({ bloodBank: 1 });
+campaignSchema.index({ startDate: 1 });
+campaignSchema.index({ status: 1 });
+
+module.exports = mongoose.model('Campaign', campaignSchema);

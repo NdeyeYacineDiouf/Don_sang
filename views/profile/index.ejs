@@ -1,0 +1,60 @@
+<%- include('../layout') %>
+
+<div class="profile-container">
+  <div class="profile-header">
+    <h1>Mon Profil</h1>
+    <a href="/profile/edit" class="btn btn-primary">Modifier</a>
+  </div>
+
+  <div class="profile-details">
+    <div class="profile-info">
+      <p><strong>Nom :</strong> <%= donor.firstName %> <%= donor.lastName %></p>
+      <p><strong>Email :</strong> <%= user.email %></p>
+      <% if (donor.bloodGroup) { %>
+        <p><strong>Groupe sanguin :</strong> <%= donor.bloodGroup %></p>
+      <% } %>
+    </div>
+
+    <div class="eligibility-status">
+      <h3>Éligibilité au don</h3>
+      <% if (donor.isEligible()) { %>
+        <p class="eligible"><i class="fas fa-check-circle"></i> Vous êtes éligible pour un don</p>
+      <% } else { %>
+        <p class="not-eligible"><i class="fas fa-times-circle"></i> Vous n'êtes pas éligible actuellement</p>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="donation-history">
+    <h2>Historique des dons</h2>
+    <% if (appointments.length > 0) { %>
+      <table class="donation-table">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Campagne</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% appointments.forEach(appointment => { %>
+            <tr>
+              <td><%= appointment.slot.date.toLocaleDateString() %></td>
+              <td><%= appointment.campaign.title %></td>
+              <td>
+                <span class="status-badge <%= appointment.status %>">
+                  <%= appointment.status === 'scheduled' ? 'Planifié' : 
+                      appointment.status === 'completed' ? 'Terminé' : 
+                      appointment.status === 'cancelled' ? 'Annulé' : 
+                      'Non honoré' %>
+                </span>
+              </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p>Aucun don enregistré</p>
+    <% } %>
+  </div>
+</div>

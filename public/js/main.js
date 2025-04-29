@@ -1,27 +1,43 @@
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('Plateforme de dons de sang chargée!');
-
-    // Mettre en évidence le lien de navigation actif
+    // Initialize active nav link
     const currentPath = window.location.pathname;
-    const navLinks = document.querySelectorAll('nav ul li a');
-
-    navLinks.forEach(link => {
+    document.querySelectorAll('nav a').forEach(link => {
         if (link.getAttribute('href') === currentPath) {
             link.classList.add('active');
         }
     });
 
-    // Gestion des formulaires
+    // Form validation
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
+        form.addEventListener('submit', function (e) {
+            const requiredFields = this.querySelectorAll('[required]');
+            let isValid = true;
 
-            // Ici vous pourriez ajouter la logique pour envoyer les données au serveur
-            console.log('Formulaire soumis', form);
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    isValid = false;
+                } else {
+                    field.classList.remove('error');
+                }
+            });
 
-            // Simulation de succès
-            alert('Opération réussie!');
+            if (!isValid) {
+                e.preventDefault();
+                alert('Veuillez remplir tous les champs obligatoires');
+            }
+        });
+    });
+
+    // Time slot selection
+    document.querySelectorAll('.time-slot').forEach(slot => {
+        slot.addEventListener('click', function () {
+            document.querySelectorAll('.time-slot').forEach(s => {
+                s.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            document.getElementById('slotId').value = this.dataset.slotId;
         });
     });
 });
