@@ -1,0 +1,107 @@
+<h2>Créneaux pour la campagne: <%= campaign.title %></h2>
+
+<p><strong>Dates :</strong> du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %></p>
+<p><strong>Horaires :</strong> <%= campaign.startTime %> - <%= campaign.endTime %></p>
+<p><strong>Lieu :</strong> <%= campaign.location %></p>
+
+<% if (slots && slots.length > 0) { %>
+  <div style="margin-top: 20px;">
+    <h3>Liste des créneaux (<%= slots.length %> créneaux)</h3>
+    
+    <table border="1" cellpadding="8" cellspacing="0" style="width: 100%;">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Horaire</th>
+          <th>Places disponibles</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% 
+        // Organiser les créneaux par jour
+        const slotsByDay = {};
+        slots.forEach(slot => {
+          const dayStr = slot.day.toLocaleDateString();
+          if (!slotsByDay[dayStr]) {
+            slotsByDay[dayStr] = [];
+          }
+          slotsByDay[dayStr].push(slot);
+        });
+        
+        // Afficher les créneaux organisés par jour
+        Object.keys(slotsByDay).sort().forEach(day => { 
+          slotsByDay[day].forEach((slot, index) => {
+        %>
+          <tr <%= index === 0 ? 'style="border-top: 3px solid #007BFF;"' : '' %>>
+            <% if (index === 0) { %>
+              <td rowspan="<%= slotsByDay[day].length %>" style="background-color: #f0f0f0; font-weight: bold;">
+                <%= day %>
+              </td>
+            <% } %>
+            <td><%= slot.startTime %> - <%= slot.endTime %></td>
+            <td>
+              <%= slot.maxPeople - slot.reserved %>/<%= slot.maxPeople %>
+              <% if (slot.reserved > 0) { %>
+                <span style="color: #ff6b6b;">(<%=slot.reserved%> réservations)</span>
+              <% } %>
+            </td>
+            <td>
+              <form action="/admin/slots/<%= slot._id %>/delete" method="POST" style="display: inline;">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" 
+                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce créneau ?')"
+                        style="background-color: #ff6b6b; color: white; border: none; padding: 5px 10px; border-radius: 3px;">
+                  Supprimer
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+<% } else { %>
+  <div style="margin: 20px 0; padding: 15px; background-color: #ffe6e6; border-radius: 5px;">
+    <p style="color: #d63031; font-weight: bold;">Aucun créneau n'a été défini pour cette campagne.</p>
+    <p>Utilisez le formulaire ci-dessous pour en générer automatiquement.</p>
+  </div>
+<% } %>
+
+<div style="margin-top: 30px; padding: 15px; background-color: #f0f0f0; border-radius: 5px;">
+  <h3>Générer des créneaux</h3>
+  
+  <form action="/admin/campaigns/<%= campaign._id %>/generate-slots" method="POST">
+    <% if (slots && slots.length > 0) { %>
+    <div style="margin-bottom: 10px; padding: 10px; background-color: #ffe6e6; border-radius: 5px;">
+      <label style="font-weight: bold; color: #d63031;">
+        <input type="checkbox" name="deleteExisting" value="true" checked required> 
+        Supprimer les créneaux existants (cette action est irréversible)
+      </label>
+    </div>
+    <% } %>
+    
+    <div style="margin-bottom: 15px;">
+      <label>Durée des créneaux :</label>
+      <select name="slotDuration" style="padding: 5px; border-radius: 3px;">
+        <option value="30">30 minutes</option>
+        <option value="60" selected>1 heure</option>
+        <option value="90">1 heure 30</option>
+        <option value="120">2 heures</option>
+      </select>
+    </div>
+    
+    <button type="submit" style="background-color: #007BFF; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">
+      Générer les créneaux automatiquement
+    </button>
+  </form>
+</div>
+
+<div style="margin-top: 20px;">
+  <a href="/admin/campaigns/<%= campaign._id %>/edit">
+    <button style="background-color: #6c757d; color: white; padding: 8px 15px; border: none; border-radius: 4px; cursor: pointer;">
+      Retour à la modification de la campagne
+    </button>
+  </a>
+</div>

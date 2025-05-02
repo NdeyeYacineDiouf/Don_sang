@@ -28,3 +28,32 @@
 
   <button type="submit" style="margin-top: 15px;">Mettre à jour</button>
 </form>
+
+<hr>
+<div style="margin-top: 20px;">
+  <h3>Gestion des créneaux horaires</h3>
+  
+  <form action="/admin/campaigns/<%= campaign._id %>/generate-slots" method="POST">
+    <div style="margin-bottom: 15px;">
+      <label>Durée des créneaux :</label>
+      <select name="slotDuration">
+        <option value="30">30 minutes</option>
+        <option value="60" selected>1 heure</option>
+        <option value="90">1 heure 30</option>
+        <option value="120">2 heures</option>
+      </select>
+    </div>
+    
+    <button type="submit" style="background-color: #007BFF; color: white; padding: 8px 15px; border: none; border-radius: 4px;">
+      Générer les créneaux automatiquement
+    </button>
+  </form>
+  
+  <div style="margin-top: 15px;">
+    <a href="/admin/campaigns/<%= campaign._id %>/slots">
+      <button style="background-color: #28a745; color: white; padding: 8px 15px; border: none; border-radius: 4px;">
+        Voir/Gérer les créneaux existants
+      </button>
+    </a>
+  </div>
+</div>

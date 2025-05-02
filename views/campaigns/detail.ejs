@@ -5,20 +5,75 @@
 <p><strong>Horaire :</strong> <%= campaign.startTime %> - <%= campaign.endTime %></p>
 
 <h3>Créneaux disponibles :</h3>
-<ul>
-  <% slots.forEach(slot => { %>
-    <li>
-      📅 <%= slot.date.toLocaleDateString() %> de 🕑 <%= slot.startTime %> à <%= slot.endTime %> 
-      - Places restantes : <%= campaign.maxPeoplePerSlot - slot.reserved %>
-      <% if ((campaign.maxPeoplePerSlot - slot.reserved) > 0) { %>
-        <button>Réserver</button>
-      <% } else { %>
-        <span style="color:red;">Complet</span>
-      <% } %>
-    </li>
-  <% }) %>
-</ul>
+
+<% if (slots && slots.length > 0) { %>
+  <div class="slots-container">
+    <% 
+    // Organiser les créneaux par jour
+    const slotsByDay = {};
+    slots.forEach(slot => {
+      const dayStr = slot.day.toLocaleDateString();
+      if (!slotsByDay[dayStr]) {
+        slotsByDay[dayStr] = [];
+      }
+      slotsByDay[dayStr].push(slot);
+    });
+    
+    // Afficher les créneaux organisés par jour
+    Object.keys(slotsByDay).forEach(day => { 
+    %>
+      <div class="day-slots">
+        <h4>📅 <%= day %></h4>
+        <ul class="slots-list">
+          <% slotsByDay[day].forEach(slot => { %>
+            <li class="slot-item">
+              🕑 <%= slot.startTime %> - <%= slot.endTime %>
+              <span class="places-info">
+                Places restantes: <%= slot.maxPeople - slot.reserved %>/<%= slot.maxPeople %>
+              </span>
+              <% if ((slot.maxPeople - slot.reserved) > 0) { %>
+                <form action="/api/slots/<%= slot._id %>/reserve" method="POST" style="display: inline;">
+                  <button type="submit" class="reserve-btn">Réserver</button>
+                </form>
+              <% } else { %>
+                <span class="full-label">Complet</span>
+              <% } %>
+            </li>
+          <% }) %>
+        </ul>
+      </div>
+    <% }) %>
+  </div>
+<% } else { %>
+  <p>Aucun créneau disponible pour cette campagne.</p>
+<% } %>
+
+<% if (isAdmin) { %>
+  <div class="admin-section">
+    <h3>Ajouter un créneau</h3>
+    <form action="/campaigns/<%= campaign._id %>/slots" method="POST">
+      <div class="form-group">
+        <label for="day">Date:</label>
+        <input type="date" id="day" name="day" required>
+      </div>
+      <div class="form-group">
+        <label for="startTime">Heure de début:</label>
+        <input type="time" id="startTime" name="startTime" required>
+      </div>
+      <div class="form-group">
+        <label for="endTime">Heure de fin:</label>
+        <input type="time" id="endTime" name="endTime" required>
+      </div>
+      <div class="form-group">
+        <label for="maxPeople">Nombre de places:</label>
+        <input type="number" id="maxPeople" name="maxPeople" value="<%= campaign.maxPeoplePerSlot %>" required>
+      </div>
+      <button type="submit" class="add-slot-btn">Ajouter ce créneau</button>
+    </form>
+  </div>
+<% } %>
 
 <a href="/api/campaigns">
-  <button>Retour à la liste</button>
+  <button class="back-btn">Retour à la liste</button>
 </a>
+
