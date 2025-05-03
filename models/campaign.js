@@ -8,7 +8,13 @@ const campaignSchema = new mongoose.Schema({
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
   location: { type: String, required: true },
-  maxPeoplePerSlot: { type: Number, required: true } // <= ici
+  maxPeoplePerSlot: { type: Number, required: true }, // Nombre max de personnes par créneau
+
+  // Ajouter un champ pour relier les créneaux (slots) à la campagne
+  slots: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Slot' // Référence au modèle Slot
+  }]
 }, { timestamps: true });
 
 const Campaign = mongoose.model("Campaign", campaignSchema);

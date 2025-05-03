@@ -26,5 +26,23 @@
   <label>Nombre maximum de personnes par créneau :</label>
   <input type="number" name="maxPeoplePerSlot" required min="1">
   
+  <hr>
+  <div style="margin: 15px 0; padding: 10px; background-color: #f0f0f0; border-radius: 5px;">
+    <label style="font-weight: bold;">
+      <input type="checkbox" name="generateSlots" value="true" checked> 
+      Générer automatiquement les créneaux horaires
+    </label>
+    
+    <div style="margin-top: 10px;">
+      <label>Durée des créneaux :</label>
+      <select name="slotDuration">
+        <option value="30">30 minutes</option>
+        <option value="60" selected>1 heure</option>
+        <option value="90">1 heure 30</option>
+        <option value="120">2 heures</option>
+      </select>
+    </div>
+  </div>
+  
   <button type="submit" style="margin-top: 15px;">Créer la campagne</button>
 </form>
