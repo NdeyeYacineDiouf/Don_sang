@@ -1,15 +1,14 @@
 const Slot = require('../models/slot');
 const Appointment = require('../models/appointment');
 
-// Lister les rendez-vous d’un utilisateur
-// Lister les rendez-vous d’un utilisateur
+// Lister les rendez-vous d'un utilisateur
 exports.listAppointments = async (req, res) => {
     try {
-        if (!req.session.userId) {
+        if (!req.user || !req.user.id) {
             return res.status(401).send("Utilisateur non authentifié");
         }
 
-        const appointments = await Appointment.find({ user_id: req.session.userId }).populate('campaign_id');
+        const appointments = await Appointment.find({ user_id: req.user.id }).populate('campaign_id');
         res.render("appointment/index", { appointments, pageTitle: "Mes Rendez-vous" });
     } catch (err) {
         console.error(err);
@@ -17,14 +16,13 @@ exports.listAppointments = async (req, res) => {
     }
 };
 
-
 // Réserver un créneau
 exports.reserveSlot = async (req, res) => {
     try {
         const slotId = req.params.slotId;
         const userId = req.user.id;
 
-        const slot = await Slot.findById(slotId).populate('campaign'); // Utilisation de 'campaign' au lieu de 'campaign_id'
+        const slot = await Slot.findById(slotId).populate('campaign');
         if (!slot) return res.status(404).send("Créneau introuvable");
         if (slot.reserved >= slot.maxPeople) return res.status(400).send("Plus de places");
 
@@ -34,7 +32,7 @@ exports.reserveSlot = async (req, res) => {
 
         // Créer le rendez-vous
         const appointment = new Appointment({
-            campaign_id: slot.campaign._id,  // Utilisation de l'ID de la campagne
+            campaign_id: slot.campaign._id,
             center_id: "default-center",
             date_time: new Date(slot.day.toDateString() + " " + slot.startTime),
             user_id: userId,
@@ -52,7 +50,6 @@ exports.reserveSlot = async (req, res) => {
         res.status(500).send("Erreur serveur");
     }
 };
-
 
 // Annuler un rendez-vous
 exports.cancelAppointment = async (req, res) => {
@@ -72,39 +69,38 @@ exports.cancelAppointment = async (req, res) => {
         }
 
         await Appointment.findByIdAndDelete(req.params.id);
-        res.redirect("/appointments");
+        res.redirect("/api/appointments");
     } catch (err) {
         console.error(err);
         res.status(500).send("Erreur serveur");
     }
 };
 
-// Formulaire d’édition
+// Formulaire d'édition
 exports.editForm = async (req, res) => {
     try {
-        const appointment = await Appointment.findById(req.params.id).populate("campaign_id");
+        if (!req.user || !req.user.id) {
+            return res.status(401).send("Utilisateur non authentifié");
+        }
+
+        const appointment = await Appointment.findById(req.params.id)
+            .populate("campaign_id");
+
         if (!appointment || appointment.user_id.toString() !== req.user.id) {
             return res.status(403).send("Non autorisé");
         }
 
-        // Utiliser l'agrégation pour récupérer les créneaux disponibles
-        const slots = await Slot.aggregate([
-            {
-                $match: {
-                    campaign_id: appointment.campaign_id._id
-                }
-            },
-            {
-                $match: {
-                    $expr: { $lt: ["$reserved", "$maxPeople"] }
-                }
-            }
-        ]);
+        // On récupère TOUS les slots de la campagne
+        const allSlots = await Slot.find({ campaign: appointment.campaign_id._id });
+
+        // Filtrage côté JS : garder les slots disponibles ou le slot déjà sélectionné
+        const slots = allSlots.filter(slot =>
+            slot.reserved < slot.maxPeople || (appointment.slot_id && appointment.slot_id.equals(slot._id))
+        );
 
         console.log("Campagne ID:", appointment.campaign_id._id);
-        console.log("Slots disponibles:", slots); // Ajoute ça pour le debug
-        console.log("Créneau du rendez-vous:", appointment.slot_id); // Ajoute ça pour le debug
-        console.log("Créneau du rendez-vous:", appointment.date_time); // Ajoute ça pour le debug
+        console.log("Slots disponibles (ou sélectionné) :", slots.map(s => s._id.toString()));
+
         res.render("appointment/edit", {
             appointment,
             slots,
@@ -116,7 +112,6 @@ exports.editForm = async (req, res) => {
     }
 };
 
-
 // Mettre à jour le rendez-vous avec un nouveau créneau
 exports.updateAppointment = async (req, res) => {
     try {
@@ -127,7 +122,7 @@ exports.updateAppointment = async (req, res) => {
 
         const newSlotId = req.body.slot_id;
         if (appointment.slot_id.toString() === newSlotId) {
-            return res.redirect("/appointments"); // pas de changement
+            return res.redirect("/api/appointments"); // pas de changement
         }
 
         const oldSlot = await Slot.findById(appointment.slot_id);
@@ -135,7 +130,7 @@ exports.updateAppointment = async (req, res) => {
         if (!newSlot) return res.status(404).send("Nouveau créneau introuvable");
         if (newSlot.reserved >= newSlot.maxPeople) return res.status(400).send("Ce créneau est complet");
 
-        // Libérer l’ancien créneau
+        // Libérer l'ancien créneau
         if (oldSlot) {
             oldSlot.reserved = Math.max(0, oldSlot.reserved - 1);
             await oldSlot.save();
@@ -150,7 +145,7 @@ exports.updateAppointment = async (req, res) => {
         appointment.date_time = new Date(newSlot.day.toDateString() + " " + newSlot.startTime);
         await appointment.save();
 
-        res.redirect("/appointments");
+        res.redirect("/api/appointments");
     } catch (err) {
         console.error(err);
         res.status(500).send("Erreur lors de la modification du rendez-vous");

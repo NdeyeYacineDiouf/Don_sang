@@ -1,4 +1,3 @@
-
 <h1>Mes Rendez-vous</h1>
 
 <% if (appointments && appointments.length > 0) { %>
@@ -14,14 +13,20 @@
           <button type="submit">❌ Annuler</button>
         </form>
         
-
-        <!-- Modifier le rendez-vous -->
-        <form action="/api/appointments/<%= app._id %>/edit" method="GET" style="display:inline;">
-          <button type="submit">✏️ Modifier</button>
-        </form>
+        <!-- Modifier le rendez-vous - lien direct -->
+        <a href="/api/appointments/<%= app._id %>/edit">
+          <button type="button">✏️ Modifier</button>
+        </a>
       </li>
     <% }) %>
   </ul>
 <% } else { %>
-  <p>Vous n’avez pas encore de rendez-vous.</p>
+  <p>Vous n'avez pas encore de rendez-vous.</p>
 <% } %>
+
+<!-- Ajout d'un bouton pour retourner à la liste des campagnes -->
+<div class="mt-4">
+  <a href="/api/campaigns">
+    <button type="button">Voir les campagnes disponibles</button>
+  </a>
+</div>
