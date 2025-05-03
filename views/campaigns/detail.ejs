@@ -1,67 +1,24 @@
-<%- include('../layout') %>
+<h1><%= campaign.title %></h1>
+<p><strong>Description :</strong> <%= campaign.description %></p>
+<p><strong>Lieu :</strong> <%= campaign.location %></p>
+<p><strong>Date :</strong> du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %></p>
+<p><strong>Horaire :</strong> <%= campaign.startTime %> - <%= campaign.endTime %></p>
 
-<div class="campaign-detail">
-  <h1><%= campaign.title %></h1>
-  
-  <div class="campaign-info">
-    <p><%= campaign.description %></p>
-    
-    <div class="campaign-meta">
-      <div>
-        <i class="fas fa-calendar-alt"></i>
-        <span>Du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %></span>
-      </div>
-      <div>
-        <i class="fas fa-map-marker-alt"></i>
-        <span><%= campaign.bloodBank.location.address %></span>
-      </div>
-    </div>
-  </div>
+<h3>Créneaux disponibles :</h3>
+<ul>
+  <% slots.forEach(slot => { %>
+    <li>
+      📅 <%= slot.date.toLocaleDateString() %> de 🕑 <%= slot.startTime %> à <%= slot.endTime %> 
+      - Places restantes : <%= campaign.maxPeoplePerSlot - slot.reserved %>
+      <% if ((campaign.maxPeoplePerSlot - slot.reserved) > 0) { %>
+        <button>Réserver</button>
+      <% } else { %>
+        <span style="color:red;">Complet</span>
+      <% } %>
+    </li>
+  <% }) %>
+</ul>
 
-  <% if (campaign.bloodBank.location.coordinates) { %>
-    <div id="map" 
-         data-lat="<%= campaign.bloodBank.location.coordinates[1] %>" 
-         data-lng="<%= campaign.bloodBank.location.coordinates[0] %>"
-         data-title="<%= campaign.bloodBank.name %>">
-    </div>
-  <% } %>
-
-  <% if (isEligible) { %>
-    <h2>Prendre Rendez-vous</h2>
-    
-    <form action="/appointments" method="POST">
-      <input type="hidden" name="campaignId" value="<%= campaign._id %>">
-      
-      <div class="form-group">
-        <label>Choisissez un créneau :</label>
-        <div class="time-slots">
-          <% campaign.timeSlots.forEach(slot => { %>
-            <div class="time-slot <%= slot.availableSlots <= 0 ? 'disabled' : '' %>" 
-                 data-slot-id="<%= slot._id %>">
-              <strong><%= slot.date.toLocaleDateString() %></strong>
-              <p><%= slot.startTime %> - <%= slot.endTime %></p>
-              <p><%= slot.availableSlots %> places disponibles</p>
-            </div>
-          <% }) %>
-        </div>
-      </div>
-      
-      <button type="submit" class="btn btn-primary">Confirmer le Rendez-vous</button>
-    </form>
-  <% } else if (user) { %>
-    <div class="alert alert-warning">
-      <p>Vous n'êtes pas éligible pour un don à ce moment.</p>
-      <a href="/profile" class="btn">Vérifier mon profil</a>
-    </div>
-  <% } else { %>
-    <div class="alert alert-info">
-      <p>Connectez-vous pour prendre rendez-vous.</p>
-      <a href="/login" class="btn btn-primary">Se Connecter</a>
-    </div>
-  <% } %>
-</div>
-
-<% if (mapApiKey) { %>
-  <script src="/js/maps.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=<%= mapApiKey %>&callback=initMap" async defer></script>
-<% } %>
+<a href="/api/campaigns">
+  <button>Retour à la liste</button>
+</a>

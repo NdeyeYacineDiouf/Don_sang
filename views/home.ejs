@@ -1,37 +1,11 @@
-<%- include('layout') %>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Accueil - Don de Sang</title>
+</head>
+<body>
+  <h1>Bienvenue sur la plateforme de Don de Sang</h1>
 
-<div class="hero">
-  <div class="hero-content">
-    <h1>Sauvez des vies, donnez votre sang</h1>
-    <p>Rejoignez notre communauté de donneurs et participez aux campagnes près de chez vous</p>
-    
-    <div class="hero-actions">
-      <% if (user) { %>
-        <a href="/campaigns" class="btn btn-primary btn-large">Trouver une campagne</a>
-      <% } else { %>
-        <a href="/signup" class="btn btn-primary btn-large">S'inscrire</a>
-        <a href="/login" class="btn btn-outline btn-large">Se connecter</a>
-      <% } %>
-    </div>
-  </div>
-</div>
-
-<div class="features">
-  <div class="feature-card">
-    <i class="fas fa-heartbeat"></i>
-    <h3>Un don, trois vies</h3>
-    <p>Chaque don de sang peut sauver jusqu'à trois vies</p>
-  </div>
-  
-  <div class="feature-card">
-    <i class="fas fa-calendar-check"></i>
-    <h3>Rendez-vous simple</h3>
-    <p>Prenez rendez-vous en ligne en quelques clics</p>
-  </div>
-  
-  <div class="feature-card">
-    <i class="fas fa-map-marked-alt"></i>
-    <h3>Près de chez vous</h3>
-    <p>Trouvez les centres de don les plus proches</p>
-  </div>
-</div>
+</body>
+</html>

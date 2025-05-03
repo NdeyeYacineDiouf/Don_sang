@@ -1,41 +1,6 @@
-<%- include('../layout') %>
+<h1>Liste des Rendez-vous</h1>
 
-<div class="appointments-list">
-  <h1>Mes Rendez-vous</h1>
-  
-  <% if (appointments.length > 0) { %>
-    <div class="appointments-grid">
-      <% appointments.forEach(appointment => { %>
-        <div class="appointment-card <%= appointment.status %>">
-          <div class="appointment-header">
-            <h3><%= appointment.campaign.title %></h3>
-            <span class="status-badge <%= appointment.status %>">
-              <%= appointment.status === 'scheduled' ? 'Planifié' : 
-                  appointment.status === 'completed' ? 'Terminé' : 
-                  appointment.status === 'cancelled' ? 'Annulé' : 
-                  'Non honoré' %>
-            </span>
-          </div>
-          
-          <div class="appointment-body">
-            <p><i class="fas fa-calendar-day"></i> <%= appointment.slot.date.toLocaleDateString() %></p>
-            <p><i class="fas fa-clock"></i> <%= appointment.slot.startTime %> - <%= appointment.slot.endTime %></p>
-            <p><i class="fas fa-map-marker-alt"></i> <%= appointment.campaign.bloodBank.location.address %></p>
-          </div>
-
-          <% if (appointment.status === 'scheduled') { %>
-            <div class="appointment-actions">
-              <a href="/appointments/<%= appointment._id %>/cancel" class="btn btn-sm btn-danger">Annuler</a>
-            </div>
-          <% } %>
-        </div>
-      <% }) %>
-    </div>
-  <% } else { %>
-    <div class="empty-state">
-      <i class="fas fa-calendar-times"></i>
-      <p>Vous n'avez aucun rendez-vous prévu</p>
-      <a href="/campaigns" class="btn btn-primary">Trouver une campagne</a>
-    </div>
-  <% } %>
-</div>
+<p>Ici s'afficheront tous les rendez-vous pris.</p>
+<a href="/api/campaigns">
+    <button style="padding: 10px 20px; font-size: 16px;">Prendre Rendez-vous</button>
+  </a>

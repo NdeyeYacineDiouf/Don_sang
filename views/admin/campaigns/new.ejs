@@ -1,50 +1,30 @@
-<%- include('../../adminLayout') %>
+<h2>Créer une nouvelle campagne</h2>
 
-<div class="admin-form-container">
-  <h1>Créer une Nouvelle Campagne</h1>
+<form action="/admin/campaigns" method="POST">
+
+  <label>Titre :</label>
+  <input type="text" name="title" required> 
+
+  <label>Description :</label>
+  <textarea name="description"></textarea>
+
+  <label>Date de début :</label>
+  <input type="date" name="startDate" required> 
+
+  <label>Date de fin :</label>
+  <input type="date" name="endDate" required> 
+
+  <label>Heure de début :</label>
+  <input type="time" name="startTime" required> 
+
+  <label>Heure de fin :</label>
+  <input type="time" name="endTime" required> 
+
+  <label>Lieu :</label>
+  <input type="text" name="location" required>
+   
+  <label>Nombre maximum de personnes par créneau :</label>
+  <input type="number" name="maxPeoplePerSlot" required min="1">
   
-  <form action="/admin/campaigns" method="POST">
-    <div class="form-group">
-      <label for="title">Titre</label>
-      <input type="text" id="title" name="title" required>
-    </div>
-
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" name="description" required></textarea>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group">
-        <label for="startDate">Date de début</label>
-        <input type="date" id="startDate" name="startDate" required>
-      </div>
-
-      <div class="form-group">
-        <label for="endDate">Date de fin</label>
-        <input type="date" id="endDate" name="endDate" required>
-      </div>
-    </div>
-
-    <div class="form-group">
-      <label for="bloodBank">Centre de don</label>
-      <select id="bloodBank" name="bloodBank" required>
-        <% bloodBanks.forEach(bank => { %>
-          <option value="<%= bank._id %>"><%= bank.name %></option>
-        <% }) %>
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Créneaux horaires</label>
-      <div id="time-slots-container">
-        <!-- Time slots will be added dynamically -->
-      </div>
-      <button type="button" id="add-time-slot" class="btn btn-secondary">Ajouter un créneau</button>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Créer la Campagne</button>
-  </form>
-</div>
-
-<script src="/js/campaignForm.js"></script>
+  <button type="submit" style="margin-top: 15px;">Créer la campagne</button>
+</form>

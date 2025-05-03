@@ -1,43 +1,35 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    match: /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/
+    unique: true
   },
   password: {
     type: String,
-    required: true,
-    minlength: 8
-  },
-  role: {
-    type: String,
-    enum: ['visitor', 'user', 'donor', 'admin'],
-    default: 'user'
-  },
-  lastLogin: Date,
-  isVerified: {
-    type: Boolean,
-    default: false
+    required: true
   }
-}, { timestamps: true });
-
-// Password hashing
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
 });
 
-// Password comparison
-userSchema.methods.comparePassword = async function (candidatePassword) {
+// Avant d'enregistrer => hasher le mot de passe
+userSchema.pre("save", async function(next) {
+  if (!this.isModified("password")) return next();
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Méthode pour vérifier un mot de passe
+userSchema.methods.comparePassword = async function(candidatePassword) {
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
-// Indexes
-userSchema.index({ email: 1 }, { unique: true });
-userSchema.index({ role: 1 });
+const User = mongoose.model("User", userSchema);
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;

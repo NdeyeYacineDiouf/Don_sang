@@ -2,43 +2,31 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= pageTitle || 'Don de Sang' %></title>
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <title><%= pageTitle || "Don de Sang" %></title>
 </head>
 <body>
-  <header>
-    <nav>
-      <div class="nav-brand">
-        <a href="/">
-          <i class="fas fa-heartbeat"></i> Don de Sang
-        </a>
-      </div>
-      
-      <ul class="nav-links">
-        <li><a href="/campaigns">Campagnes</a></li>
-        <% if (user) { %>
-          <li><a href="/appointments">Mes Rendez-vous</a></li>
-          <li><a href="/profile">Mon Profil</a></li>
-          <li><a href="/logout">Déconnexion</a></li>
-        <% } else { %>
-          <li><a href="/login">Connexion</a></li>
-          <li><a href="/signup" class="btn btn-primary">Inscription</a></li>
-        <% } %>
-      </ul>
-    </nav>
-  </header>
 
-  <main class="container">
-    <%- include('partials/flashMessages') %>
-    <%- body %>
-  </main>
+  <!-- Navbar directement ici -->
+  <nav style="background-color: #f8f8f8; padding: 10px;">
+    <a href="/">Accueil</a>
+    <a href="/api/appointments" style="margin-left: 15px;">Don de Sang</a>
+  
+    <% if (isLoggedIn) { %>
+      <a href="/logout" style="float: right;">Se déconnecter</a>
+    <% } else { %>
+      <a href="/login" style="float: right;">Se connecter</a>
+      <a href="/signup" style="float: right; margin-right: 10px;">Créer un compte</a>
+    <% } %>
+  </nav>
+  
 
-  <footer>
-    <p>&copy; <%= new Date().getFullYear() %> Plateforme de Don de Sang</p>
-  </footer>
+  <!-- Notification -->
+  <% if (notification) { %>
+    <p style="color: green;"><%= notification %></p>
+  <% } %>
 
-  <script src="/js/main.js"></script>
+  <!-- Contenu spécifique à chaque page -->
+  <%- body %>
+
 </body>
 </html>

@@ -1,43 +1,30 @@
-<%- include('../../adminLayout') %>
+<h2>Modifier la Campagne</h2>
 
-<div class="admin-form-container">
-  <h1>Modifier la Campagne</h1>
-  
-  <form action="/admin/campaigns/<%= campaign._id %>?_method=PUT" method="POST">
-    <div class="form-group">
-      <label for="title">Titre</label>
-      <input type="text" id="title" name="title" value="<%= campaign.title %>" required>
-    </div>
+<form action="/admin/campaigns/<%= campaign._id %>" method="POST">
 
-    <div class="form-group">
-      <label for="description">Description</label>
-      <textarea id="description" name="description" required><%= campaign.description %></textarea>
-    </div>
+  <label>Titre :</label>
+  <input type="text" name="title" value="<%= campaign.title %>" required>
 
-    <div class="form-row">
-      <div class="form-group">
-        <label for="startDate">Date de début</label>
-        <input type="date" id="startDate" name="startDate" 
-               value="<%= campaign.startDate.toISOString().split('T')[0] %>" required>
-      </div>
+  <label>Description :</label>
+  <textarea name="description"><%= campaign.description %></textarea>
 
-      <div class="form-group">
-        <label for="endDate">Date de fin</label>
-        <input type="date" id="endDate" name="endDate" 
-               value="<%= campaign.endDate.toISOString().split('T')[0] %>" required>
-      </div>
-    </div>
+  <label>Date de début :</label>
+  <input type="date" name="startDate" value="<%= campaign.startDate.toISOString().substr(0, 10) %>" required>
 
-    <div class="form-group">
-      <label for="status">Statut</label>
-      <select id="status" name="status" required>
-        <option value="draft" <%= campaign.status === 'draft' ? 'selected' : '' %>>Brouillon</option>
-        <option value="active" <%= campaign.status === 'active' ? 'selected' : '' %>>Active</option>
-        <option value="completed" <%= campaign.status === 'completed' ? 'selected' : '' %>>Terminée</option>
-        <option value="cancelled" <%= campaign.status === 'cancelled' ? 'selected' : '' %>>Annulée</option>
-      </select>
-    </div>
+  <label>Date de fin :</label>
+  <input type="date" name="endDate" value="<%= campaign.endDate.toISOString().substr(0, 10) %>" required>
 
-    <button type="submit" class="btn btn-primary">Enregistrer</button>
-  </form>
-</div>
+  <label>Heure de début :</label>
+  <input type="time" name="startTime" value="<%= campaign.startTime %>" required>
+
+  <label>Heure de fin :</label>
+  <input type="time" name="endTime" value="<%= campaign.endTime %>" required>
+
+  <label>Lieu :</label>
+  <input type="text" name="location" value="<%= campaign.location %>" required>
+
+  <label>Nombre maximum de personnes par créneau :</label>
+  <input type="number" name="maxPeoplePerSlot" value="<%= campaign.maxPeoplePerSlot %>" required min="1">
+
+  <button type="submit" style="margin-top: 15px;">Mettre à jour</button>
+</form>

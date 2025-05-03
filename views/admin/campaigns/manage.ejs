@@ -1,47 +1,45 @@
-<%- include('../../adminLayout') %>
+<% if (notification) { %>
+  <div style="background-color: lightgreen; padding: 10px; margin-bottom: 15px;">
+    <%= notification %>
+  </div>
+<% } %>
 
-<div class="admin-container">
-  <h1>Gérer les Campagnes</h1>
-  
-  <a href="/admin/campaigns/new" class="btn btn-primary">Nouvelle Campagne</a>
 
-  <% if (campaigns.length > 0) { %>
-    <table class="admin-table">
-      <thead>
+<h2>Gérer les Campagnes</h2>
+
+<% if (campaigns.length > 0) { %>
+  <table border="1" cellpadding="10" cellspacing="0">
+    <thead>
+      <tr>
+        <th>Titre</th>
+        <th>Description</th>
+        <th>Dates</th>
+        <th>Heures</th>
+        <th>Lieu</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% campaigns.forEach(campaign => { %>
         <tr>
-          <th>Titre</th>
-          <th>Dates</th>
-          <th>Lieu</th>
-          <th>Statut</th>
-          <th>Actions</th>
+          <td><%= campaign.title %></td>
+          <td><%= campaign.description %></td>
+          <td>du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %></td>
+          <td><%= campaign.startTime %> - <%= campaign.endTime %></td>
+          <td><%= campaign.location %></td>
+          <td>
+            <a href="/admin/campaigns/<%= campaign._id %>/edit">
+              <button style="background-color: orange; color: white;">Modifier 🖊️</button>
+            </a>
+
+            <form action="/admin/campaigns/<%= campaign._id %>?_method=DELETE" method="POST" style="display:inline;">
+              <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette campagne ?')">Supprimer 🗑️</button>
+            </form>            
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        <% campaigns.forEach(campaign => { %>
-          <tr>
-            <td><%= campaign.title %></td>
-            <td>
-              <%= campaign.startDate.toLocaleDateString() %> - 
-              <%= campaign.endDate.toLocaleDateString() %>
-            </td>
-            <td><%= campaign.bloodBank.name %></td>
-            <td>
-              <span class="status-badge <%= campaign.status %>">
-                <%= campaign.status %>
-              </span>
-            </td>
-            <td class="actions">
-              <a href="/admin/campaigns/<%= campaign._id %>" class="btn btn-sm">Voir</a>
-              <a href="/admin/campaigns/<%= campaign._id %>/edit" class="btn btn-sm btn-primary">Modifier</a>
-              <form action="/admin/campaigns/<%= campaign._id %>?_method=DELETE" method="POST" style="display:inline;">
-                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Êtes-vous sûr ?')">Supprimer</button>
-              </form>
-            </td>
-          </tr>
-        <% }) %>
-      </tbody>
-    </table>
-  <% } else { %>
-    <p>Aucune campagne trouvée.</p>
-  <% } %>
-</div>
+      <% }) %>
+    </tbody>
+  </table>
+<% } else { %>
+  <p>Aucune campagne trouvée.</p>
+<% } %>

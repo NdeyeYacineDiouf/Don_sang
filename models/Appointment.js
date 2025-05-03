@@ -1,36 +1,24 @@
 const mongoose = require('mongoose');
 
-const appointmentSchema = new mongoose.Schema({
-    campaign: {
+const AppointmentSchema = new mongoose.Schema({
+    campaign_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Campaign',
         required: true
     },
-    slot: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'TimeSlot',
+    center_id: {
+        type: String, // ou ObjectId si tu gères les centres aussi
         required: true
     },
-    donor: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Donor',
+    date_time: {
+        type: Date,
         required: true
     },
-    status: {
-        type: String,
-        enum: ['scheduled', 'completed', 'cancelled', 'no_show'],
-        default: 'scheduled'
-    },
-    cancellationReason: String,
-    feedback: {
-        rating: { type: Number, min: 1, max: 5 },
-        comment: String
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 }, { timestamps: true });
 
-// Indexes
-appointmentSchema.index({ donor: 1 });
-appointmentSchema.index({ campaign: 1 });
-appointmentSchema.index({ slot: 1 });
-
-module.exports = mongoose.model('Appointment', appointmentSchema);
+module.exports = mongoose.model('Appointment', AppointmentSchema);
