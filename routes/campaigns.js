@@ -79,29 +79,29 @@ router.post("/:id/slots", isAuthenticated, async (req, res) => {
 });
 
 // 4️⃣ - Réserver un créneau (nouvelle route)
-router.post("/slots/:slotId/reserve", isAuthenticated, async (req, res) => {
+router.post("/:campaignId/slots/:slotId/reserve", isAuthenticated, async (req, res) => {
   try {
     const slot = await Slot.findById(req.params.slotId);
-    
     if (!slot) {
       return res.status(404).send("Créneau non trouvé");
     }
-    
+
     // Vérifier s'il reste des places
     if (slot.reserved >= slot.maxPeople) {
       return res.status(400).send("Ce créneau est complet");
     }
-    
+
     // Incrémenter le nombre de réservations
     slot.reserved += 1;
     await slot.save();
-    
+
     // Rediriger vers la page de la campagne
-    res.redirect(`/campaigns/${slot.campaign}`);
+    res.redirect(`/campaigns/${req.params.campaignId}`);
   } catch (err) {
     console.error(err);
     res.status(500).send("Erreur lors de la réservation");
   }
 });
+
 
 module.exports = router;

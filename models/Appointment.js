@@ -6,6 +6,11 @@ const AppointmentSchema = new mongoose.Schema({
         ref: 'Campaign',
         required: true
     },
+    slot_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Slot',
+        required: true
+    },
     center_id: {
         type: String, // ou ObjectId si tu gères les centres aussi
         required: true

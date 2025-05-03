@@ -1,3 +1,4 @@
+
 <h1><%= campaign.title %></h1>
 <p><strong>Description :</strong> <%= campaign.description %></p>
 <p><strong>Lieu :</strong> <%= campaign.location %></p>
@@ -32,9 +33,10 @@
                 Places restantes: <%= slot.maxPeople - slot.reserved %>/<%= slot.maxPeople %>
               </span>
               <% if ((slot.maxPeople - slot.reserved) > 0) { %>
-                <form action="/api/slots/<%= slot._id %>/reserve" method="POST" style="display: inline;">
+                <form action="/api/appointments/slots/<%= slot._id %>/reserve" method="POST" style="display: inline;">
                   <button type="submit" class="reserve-btn">Réserver</button>
                 </form>
+                
               <% } else { %>
                 <span class="full-label">Complet</span>
               <% } %>

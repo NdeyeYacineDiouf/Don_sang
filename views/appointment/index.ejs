@@ -1,6 +1,27 @@
-<h1>Liste des Rendez-vous</h1>
 
-<p>Ici s'afficheront tous les rendez-vous pris.</p>
-<a href="/api/campaigns">
-    <button style="padding: 10px 20px; font-size: 16px;">Prendre Rendez-vous</button>
-  </a>
+<h1>Mes Rendez-vous</h1>
+
+<% if (appointments && appointments.length > 0) { %>
+  <ul>
+    <% appointments.forEach(app => { %>
+      <li>
+        🗓️ <strong><%= app.campaign_id.title %></strong> — 
+        le <%= new Date(app.date_time).toLocaleDateString() %> à 
+        <%= new Date(app.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+
+        <!-- Annuler le rendez-vous -->
+        <form action="/api/appointments/<%= app._id %>/cancel?_method=DELETE" method="POST" style="display:inline;">
+          <button type="submit">❌ Annuler</button>
+        </form>
+        
+
+        <!-- Modifier le rendez-vous -->
+        <form action="/api/appointments/<%= app._id %>/edit" method="GET" style="display:inline;">
+          <button type="submit">✏️ Modifier</button>
+        </form>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>Vous n’avez pas encore de rendez-vous.</p>
+<% } %>

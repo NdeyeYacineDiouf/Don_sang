@@ -1,0 +1,21 @@
+
+<div class="container mt-5">
+    <h2>Modifier votre rendez-vous</h2>
+
+    <form action="/api/appointments/<%= appointment._id %>?_method=PUT" method="POST">
+        <div class="mb-3">
+            <label for="slot_id" class="form-label">Nouveau créneau disponible</label>
+            <select name="slot_id" id="slot_id"required>
+                <% slots.forEach(slot => { %>
+                    <option value="<%= slot._id %>" <%= appointment.slot_id && appointment.slot_id.toString() === slot._id.toString() ? 'selected' : '' %>>
+                        Le <%= slot.day.toLocaleDateString('fr-FR') %> à <%= slot.startTime %> 
+                        (<%= slot.maxPeople - slot.reserved %> places restantes)
+                    </option>
+                <% }) %>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Valider la modification</button>
+        <a href="/api/appointments" class="btn btn-secondary">Annuler</a>
+    </form>
+</div>

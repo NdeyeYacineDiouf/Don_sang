@@ -147,3 +147,25 @@ footer {
     border-radius: 4px;
     font-family: inherit;
 }
+
+select {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--text-color);
+    appearance: none; /* Supprime le style par défaut */
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%204%205'%3E%3Cpath%20fill='black'%20d='M2%200L0%202h4L2%200zM2%205l2-2H0l2%202z'/%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.7rem center;
+    background-size: 0.65rem auto;
+}
+
+select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 3px rgba(211, 47, 47, 0.4);
+}
