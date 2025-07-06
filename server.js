@@ -3,7 +3,6 @@ const layouts = require("express-ejs-layouts");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const path = require("path");
-
 const flash = require('connect-flash');
 
 // Importer les routes
@@ -32,27 +31,26 @@ mongoose.connect("mongodb://localhost:27017/don_sang", {
 .catch(err => console.error("❌ Erreur MongoDB :", err));
 
 // 2. Configuration Express + Layouts
-app.set("view engine", "ejs"); // Utiliser EJS
-app.set("views", path.join(__dirname, "views")); // Dossier views
-app.use(layouts); // Activer express-ejs-layouts
-app.set("layout", "layout"); // Utiliser views/layout.ejs par défaut
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(layouts);
+app.set("layout", "layout");
 
 app.use((req, res, next) => {
   if (req.path.startsWith('/admin')) {
-    res.locals.layout = "adminLayout"; // Layout spécial pour admin
+    res.locals.layout = "adminLayout";
   } else {
-    res.locals.layout = "layout"; // Layout normal pour clients
+    res.locals.layout = "layout";
   }
   next();
 });
 
 // Middlewares
-app.use(express.urlencoded({ extended: true })); // Lire les formulaires
-app.use(express.static(path.join(__dirname, "public"))); // Fichiers statiques (images, css, js)
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "public")));
 
 const methodOverride = require("method-override");
 app.use(methodOverride('_method'));
-
 
 // 3. Sessions
 app.use(session({
@@ -62,10 +60,25 @@ app.use(session({
 }));
 
 // 4. Variables disponibles dans toutes les vues
-app.use((req, res, next) => {
-  res.locals.isLoggedIn = !!req.session.userId; // connecté ou pas
-  res.locals.notification = req.session.notification || null; // messages
-  delete req.session.notification; // effacer après affichage
+app.use(async (req, res, next) => {
+  res.locals.isLoggedIn = !!req.session.userId;
+  res.locals.notification = req.session.notification || null;
+  delete req.session.notification;
+  
+  // ⭐ MIDDLEWARE USER AJOUTÉ ⭐
+  if (req.session && req.session.userId) {
+    try {
+      const User = require('./models/user');
+      const user = await User.findById(req.session.userId);
+      res.locals.user = user;
+    } catch (err) {
+      console.error('Erreur lors de la récupération de l\'utilisateur:', err);
+      res.locals.user = null;
+    }
+  } else {
+    res.locals.user = null;
+  }
+  
   next();
 });
 
@@ -73,7 +86,6 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.render("home", { pageTitle: "Accueil - Don de Sang" });
 });
-
 
 // Routes API
 app.use('/api/appointments', appointmentRoutes);

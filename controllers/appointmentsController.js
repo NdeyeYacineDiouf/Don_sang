@@ -9,7 +9,31 @@ exports.listAppointments = async (req, res) => {
         }
 
         const appointments = await Appointment.find({ user_id: req.user.id }).populate('campaign_id');
-        res.render("appointment/index", { appointments, pageTitle: "Mes Rendez-vous" });
+        
+        // ⭐ NETTOYER LES RENDEZ-VOUS ORPHELINS ⭐
+        const validAppointments = [];
+        const orphanedAppointments = [];
+        
+        appointments.forEach(app => {
+            if (app.campaign_id) {
+                validAppointments.push(app);
+            } else {
+                orphanedAppointments.push(app);
+            }
+        });
+        
+        // Optionnel : Supprimer automatiquement les rendez-vous orphelins
+        if (orphanedAppointments.length > 0) {
+            console.log(`Suppression de ${orphanedAppointments.length} rendez-vous orphelins`);
+            await Appointment.deleteMany({ 
+                _id: { $in: orphanedAppointments.map(app => app._id) }
+            });
+        }
+        
+        res.render("appointment/index", { 
+            appointments: validAppointments, // Afficher seulement les valides
+            pageTitle: "Mes Rendez-vous" 
+        });
     } catch (err) {
         console.error(err);
         res.status(500).send("Erreur lors de la récupération des rendez-vous");

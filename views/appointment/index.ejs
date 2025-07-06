@@ -1,32 +1,242 @@
-<h1>Mes Rendez-vous</h1>
+<style>
+  /* CSS pour la page des rendez-vous */
+  .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+  }
 
-<% if (appointments && appointments.length > 0) { %>
-  <ul>
-    <% appointments.forEach(app => { %>
-      <li>
-        🗓️ <strong><%= app.campaign_id.title %></strong> — 
-        le <%= new Date(app.date_time).toLocaleDateString() %> à 
-        <%= new Date(app.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+  .appointments-header {
+      margin-bottom: 2rem;
+  }
 
-        <!-- Annuler le rendez-vous -->
-        <form action="/api/appointments/<%= app._id %>/cancel?_method=DELETE" method="POST" style="display:inline;">
-          <button type="submit">❌ Annuler</button>
-        </form>
-        
-        <!-- Modifier le rendez-vous - lien direct -->
-        <a href="/api/appointments/<%= app._id %>/edit">
-          <button type="button">✏️ Modifier</button>
-        </a>
-      </li>
-    <% }) %>
-  </ul>
-<% } else { %>
-  <p>Vous n'avez pas encore de rendez-vous.</p>
-<% } %>
+  .appointments-header h1 {
+      color: #2d3748;
+      margin-bottom: 1rem;
+  }
 
-<!-- Ajout d'un bouton pour retourner à la liste des campagnes -->
-<div class="mt-4">
-  <a href="/api/campaigns">
-    <button type="button">Voir les campagnes disponibles</button>
-  </a>
+  .appointment-list {
+      list-style: none;
+      padding: 0;
+  }
+
+  .appointment-item {
+      background: white;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-left: 4px solid #dc3545;
+  }
+
+  .appointment-item.invalid {
+      border-left-color: #6c757d;
+      background: #f8f9fa;
+  }
+
+  .appointment-info {
+      flex: 1;
+  }
+
+  .appointment-title {
+      font-weight: bold;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+  }
+
+  .appointment-title.invalid {
+      color: #6c757d;
+  }
+
+  .appointment-datetime {
+      color: #718096;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+  }
+
+  .appointment-actions {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+  }
+
+  .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+  }
+
+  .btn-edit {
+      background: #17a2b8;
+      color: white;
+  }
+
+  .btn-edit:hover {
+      background: #138496;
+      transform: translateY(-1px);
+  }
+
+  .btn-cancel {
+      background: #dc3545;
+      color: white;
+  }
+
+  .btn-cancel:hover {
+      background: #c82333;
+      transform: translateY(-1px);
+  }
+
+  .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+  }
+
+  .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+
+  .empty-state h3 {
+      color: #2d3748;
+      margin-bottom: 1rem;
+  }
+
+  .empty-state p {
+      color: #718096;
+      margin-bottom: 2rem;
+  }
+
+  .btn-primary {
+      background: #dc3545;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+  }
+
+  .btn-primary:hover {
+      background: #c82333;
+      transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+      background: transparent;
+      color: #2d3748;
+      border: 1px solid #e2e8f0;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+  }
+
+  .btn-secondary:hover {
+      background: #f7fafc;
+  }
+
+  .invalid-appointment {
+      background: #fff3cd;
+      border-color: #ffc107;
+      border-left: 4px solid #ffc107;
+  }
+
+  .invalid-text {
+      color: #856404;
+      font-style: italic;
+  }
+
+  @media (max-width: 768px) {
+      .appointment-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+      }
+
+      .appointment-actions {
+          width: 100%;
+          justify-content: flex-start;
+      }
+
+      .container {
+          padding: 0 1rem;
+      }
+  }
+</style>
+
+<div class="container">
+  <div class="appointments-header">
+      <h1>Mes Rendez-vous</h1>
+  </div>
+
+  <% if (appointments && appointments.length > 0) { %>
+      <ul class="appointment-list">
+          <% appointments.forEach(app => { %>
+              <li class="appointment-item <%= !app.campaign_id ? 'invalid-appointment' : '' %>">
+                  <div class="appointment-info">
+                      <div class="appointment-title <%= !app.campaign_id ? 'invalid-text' : '' %>">
+                          🗓️ 
+                          <% if (app.campaign_id && app.campaign_id.title) { %>
+                              <%= app.campaign_id.title %>
+                          <% } else { %>
+                              Campagne supprimée
+                          <% } %>
+                      </div>
+                      <div class="appointment-datetime">
+                          📅 le <%= new Date(app.date_time).toLocaleDateString('fr-FR') %> à 
+                          <%= new Date(app.date_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %>
+                          <% if (!app.campaign_id) { %>
+                              <span class="invalid-text">(Campagne non disponible)</span>
+                          <% } %>
+                      </div>
+                  </div>
+
+                  <div class="appointment-actions">
+                      <% if (app.campaign_id) { %>
+                          <!-- Modifier le rendez-vous (seulement si la campagne existe) -->
+                          <a href="/api/appointments/<%= app._id %>/edit" class="btn btn-edit">
+                              ✏️ Modifier
+                          </a>
+                      <% } %>
+                      
+                      <!-- Annuler le rendez-vous (toujours possible) -->
+                      <form action="/api/appointments/<%= app._id %>/cancel?_method=DELETE" method="POST" style="display:inline;">
+                          <button type="submit" class="btn btn-cancel" onclick="return confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')">
+                              ❌ Annuler
+                          </button>
+                      </form>
+                  </div>
+              </li>
+          <% }) %>
+      </ul>
+  <% } else { %>
+      <div class="empty-state">
+          <h3>Aucun rendez-vous</h3>
+          <p>Vous n'avez pas encore de rendez-vous planifié.</p>
+          
+          <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+              <a href="/api/campaigns" class="btn btn-primary">
+                  Voir les campagnes disponibles
+              </a>
+          </div>
+      </div>
+  <% } %>
+
+  <!-- Bouton pour retourner aux campagnes -->
+  <div style="margin-top: 2rem; text-align: center;">
+      <a href="/api/campaigns" class="btn btn-secondary">
+          ← Voir les campagnes disponibles
+      </a>
+  </div>
 </div>

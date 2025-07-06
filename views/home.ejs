@@ -1,8 +1,262 @@
-<div class="container mt-5">
-    <h1>Bienvenue sur la plateforme Don Sang</h1>
-    <p>Voici l'accueil de notre site. Nous vous invitons à vous inscrire pour un rendez-vous de don de sang, ou à consulter nos campagnes en cours.</p>
+<style>
+    /* CSS spécifique pour le contenu de la page d'accueil */
     
-    <!-- Ajouter des sections spécifiques si nécessaire -->
-    <a href="/api/appointments" class="btn btn-primary">Prendre un rendez-vous</a>
-    <a href="/api/campaigns" class="btn btn-secondary">Voir les campagnes</a>
-</div>
+    /* Hero Section */
+    .hero {
+        background-color: #fdf2f8;
+        padding: 4rem 2rem;
+        text-align: center;
+        min-height: 60vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .hero h1 {
+        font-size: 3.5rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 1.5rem;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+    }
+
+    .hero p {
+        font-size: 1.2rem;
+        color: #718096;
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Boutons perfectionnés */
+    .btn-hero {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.75rem 2rem;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+        min-width: 180px;
+    }
+
+    .btn-primary-hero {
+        background: #dc3545;
+        color: #ffffff;
+        border: 2px solid #dc3545;
+    }
+
+    .btn-primary-hero:hover {
+        background: #c82333;
+        border-color: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+        color: #ffffff;
+    }
+
+    .btn-secondary-hero {
+        background: transparent;
+        color: #2d3748;
+        border: 2px solid #e2e8f0;
+    }
+
+    .btn-secondary-hero:hover {
+        background: #2d3748;
+        border-color: #2d3748;
+        color: #ffffff;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(45, 55, 72, 0.2);
+    }
+
+    /* Statistics Section rouge */
+    .stats-section {
+        background: #dc3545;
+        padding: 4rem 2rem;
+        color: #ffffff;
+    }
+
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 3rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stat-icon {
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+    }
+
+    .stat-icon svg {
+        width: 48px;
+        height: 48px;
+        stroke: currentColor;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .stat-label {
+        font-size: 1.125rem;
+        font-weight: 500;
+        opacity: 0.9;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .hero-content {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .stat-item {
+        animation: fadeInUp 0.8s ease-out;
+    }
+
+    .stat-item:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .stat-item:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    /* Responsive pour le contenu */
+    @media (max-width: 768px) {
+        .hero {
+            padding: 3rem 1rem;
+            min-height: 50vh;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+        }
+
+        .hero-buttons {
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-hero {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .stats-container {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .stats-section {
+            padding: 3rem 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero h1 {
+            font-size: 2rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Sauvez des vies avec un simple geste</h1>
+        <p>
+            Rejoignez notre communauté de donneurs et participez aux campagnes de 
+            don de sang près de chez vous. Chaque don compte.
+        </p>
+        
+        <div class="hero-buttons">
+            <a href="/signup" class="btn-hero btn-primary-hero">Devenir donneur</a>
+            <a href="/api/campaigns" class="btn-hero btn-secondary-hero">Voir les campagnes</a>
+        </div>
+    </div>
+</section>
+
+<!-- Statistics Section -->
+<section class="stats-section">
+    <div class="stats-container">
+        <div class="stat-item">
+            <div class="stat-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="stat-number">15,000+</div>
+            <div class="stat-label">Donneurs actifs</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.57831 8.50903 2.99871 7.05 2.99871C5.59096 2.99871 4.19169 3.57831 3.16 4.61C2.1283 5.64169 1.54871 7.04096 1.54871 8.5C1.54871 9.95903 2.1283 11.3583 3.16 12.39L12 21.23L20.84 12.39C21.351 11.8792 21.7563 11.2728 22.0329 10.6053C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.06211 22.0329 6.3947C21.7563 5.72729 21.351 5.1208 20.84 4.61Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="stat-number">50,000+</div>
+            <div class="stat-label">Dons collectés</div>
+        </div>
+        
+        <div class="stat-item">
+            <div class="stat-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+            <div class="stat-number">200+</div>
+            <div class="stat-label">Centres partenaires</div>
+        </div>
+    </div>
+</section>
