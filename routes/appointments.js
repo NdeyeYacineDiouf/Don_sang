@@ -6,11 +6,6 @@ const isAuthenticated = require("../middlewares/authMiddleware");
 const appointmentController = require("../controllers/appointmentsController");
 const methodOverride = require('method-override'); // Assurez-vous d'avoir installé ce package
 
-<<<<<<< HEAD
-// Afficher la page des rendez-vous avec la liste des réservations
-router.get("/", isAuthenticated, appointmentsController.getUserAppointments);
-
-=======
 // Middleware pour gérer les méthodes HTTP comme DELETE
 router.use(methodOverride('_method'));
 
@@ -28,5 +23,4 @@ router.post("/:id/cancel", isAuthenticated, appointmentController.cancelAppointm
 router.get("/:id/edit", isAuthenticated, appointmentController.editForm);
 router.post("/:id/edit", isAuthenticated, appointmentController.updateAppointment);
 
->>>>>>> origin/nathan
 module.exports = router;
