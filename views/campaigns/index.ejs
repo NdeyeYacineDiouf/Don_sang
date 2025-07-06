@@ -1,26 +1,373 @@
+<style>
+  /* CSS spécifique pour la page des campagnes */
+  
+  .campaigns-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #fdf2f8;
+      min-height: 70vh;
+  }
 
-<h2>Liste des Campagnes Disponibles</h2>
+  .campaigns-header {
+      text-align: center;
+      margin-bottom: 3rem;
+  }
 
-<% if (campaigns.length > 0) { %>
-  <ul>
-    <% campaigns.forEach(campaign => { %>
-      <li>
-        <strong><%= campaign.title %></strong><br>
-        Description : <%= campaign.description %><br>
-        Date : du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %><br>
-        Horaire : <%= campaign.startTime %> - <%= campaign.endTime %><br>
-        Lieu : <%= campaign.location %><br><br>
+  .campaigns-header h1 {
+      color: #2d3748;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+  }
 
-        <!-- 🔥 Le bouton Voir Détail ici -->
-        <a href="/api/campaigns/<%= campaign._id %>">
-          <button>Voir Détail</button>
-        </a>
-        
-        </a>
-      </li>
-      <hr>
-    <% }) %>
-  </ul>
-<% } else { %>
-  <p>Aucune campagne disponible pour l'instant.</p>
-<% } %>
+  .campaigns-header p {
+      color: #718096;
+      font-size: 1.1rem;
+  }
+
+  .campaigns-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+  }
+
+  .campaign-card {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+      position: relative;
+      overflow: hidden;
+  }
+
+  .campaign-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .campaign-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+  }
+
+  .campaign-title {
+      color: #2d3748;
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+      flex: 1;
+      margin-right: 1rem;
+  }
+
+  .campaign-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+  }
+
+  .badge-urgent {
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+  }
+
+  .badge-normal {
+      background: #f0f9ff;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+  }
+
+  .campaign-description {
+      color: #718096;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+  }
+
+  .campaign-details {
+      margin-bottom: 1.5rem;
+  }
+
+  .detail-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.75rem;
+      color: #4a5568;
+      font-size: 0.9rem;
+  }
+
+  .detail-icon {
+      width: 1rem;
+      height: 1rem;
+      margin-right: 0.75rem;
+      color: #dc3545;
+      flex-shrink: 0;
+  }
+
+  .campaign-status {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+  }
+
+  .status-indicator {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+  }
+
+  .status-active {
+      background: #22c55e;
+  }
+
+  .status-upcoming {
+      background: #3b82f6;
+  }
+
+  .status-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+  }
+
+  .status-active-text {
+      color: #22c55e;
+  }
+
+  .status-upcoming-text {
+      color: #3b82f6;
+  }
+
+  .campaign-button {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+  }
+
+  .campaign-button:hover {
+      background: #c82333;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+      color: white;
+      text-decoration: none;
+  }
+
+  .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  }
+
+  .empty-state-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto 1rem;
+      color: #cbd5e0;
+  }
+
+  .empty-state h3 {
+      color: #2d3748;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+  }
+
+  .empty-state p {
+      color: #718096;
+      margin-bottom: 2rem;
+  }
+
+  .back-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      color: #2d3748;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: 2rem;
+  }
+
+  .back-button:hover {
+      background: #f7fafc;
+      border-color: #cbd5e0;
+      color: #2d3748;
+      text-decoration: none;
+  }
+
+  /* Animation d'apparition */
+  .campaign-card {
+      animation: fadeInUp 0.6s ease-out;
+  }
+
+  .campaign-card:nth-child(2) {
+      animation-delay: 0.1s;
+  }
+
+  .campaign-card:nth-child(3) {
+      animation-delay: 0.2s;
+  }
+
+  @keyframes fadeInUp {
+      from {
+          opacity: 0;
+          transform: translateY(30px);
+      }
+      to {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+      .campaigns-container {
+          padding: 1rem;
+      }
+
+      .campaigns-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+      }
+
+      .campaigns-header h1 {
+          font-size: 2rem;
+      }
+
+      .campaign-card {
+          padding: 1.5rem;
+      }
+
+      .campaign-header {
+          flex-direction: column;
+          align-items: flex-start;
+      }
+
+      .campaign-title {
+          margin-right: 0;
+          margin-bottom: 0.5rem;
+      }
+  }
+
+  @media (max-width: 480px) {
+      .campaigns-header h1 {
+          font-size: 1.75rem;
+      }
+
+      .campaign-card {
+          padding: 1rem;
+      }
+  }
+</style>
+
+<div class="campaigns-container">
+  <div class="campaigns-header">
+      <h1>Campagnes Disponibles</h1>
+      <p>Découvrez les campagnes de don de sang près de chez vous</p>
+  </div>
+
+  <% if (campaigns && campaigns.length > 0) { %>
+      <div class="campaigns-grid">
+          <% campaigns.forEach(campaign => { 
+              // Déterminer le statut de la campagne
+              const now = new Date();
+              const startDate = new Date(campaign.startDate);
+              const endDate = new Date(campaign.endDate);
+              const isActive = now >= startDate && now <= endDate;
+              const isUpcoming = now < startDate;
+              
+              // Déterminer si c'est urgent (par exemple, si c'est dans les 7 prochains jours)
+              const isUrgent = (startDate - now) / (1000 * 60 * 60 * 24) <= 7 && isUpcoming;
+          %>
+              <div class="campaign-card">
+                  <div class="campaign-header">
+                      <h3 class="campaign-title"><%= campaign.title %></h3>
+                      <span class="campaign-badge <%= isUrgent ? 'badge-urgent' : 'badge-normal' %>">
+                          <%= isUrgent ? 'Urgent' : 'Normal' %>
+                      </span>
+                  </div>
+                  
+                  <p class="campaign-description">
+                      <%= campaign.description || 'Participez à cette campagne de don de sang pour sauver des vies.' %>
+                  </p>
+                  
+                  <div class="campaign-details">
+                      <div class="detail-item">
+                          <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                          </svg>
+                          <span>
+                              <%= campaign.startDate.toLocaleDateString('fr-FR') %> - 
+                              <%= campaign.endDate.toLocaleDateString('fr-FR') %>
+                          </span>
+                      </div>
+                      
+                      <div class="detail-item">
+                          <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                          </svg>
+                          <span><%= campaign.location %></span>
+                      </div>
+                      
+                      <div class="detail-item">
+                          <svg class="detail-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          </svg>
+                          <span><%= campaign.startTime %> - <%= campaign.endTime %></span>
+                      </div>
+                  </div>
+                  
+                  <div class="campaign-status">
+                      <div class="status-indicator <%= isActive ? 'status-active' : 'status-upcoming' %>"></div>
+                      <span class="status-text <%= isActive ? 'status-active-text' : 'status-upcoming-text' %>">
+                          <%= isActive ? 'En cours' : 'À venir' %>
+                      </span>
+                  </div>
+                  
+                  <a href="/api/campaigns/<%= campaign._id %>" class="campaign-button">
+                      Voir les détails
+                  </a>
+              </div>
+          <% }) %>
+      </div>
+  <% } else { %>
+      <div class="empty-state">
+          <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+          </svg>
+          <h3>Aucune campagne disponible</h3>
+          <p>Il n'y a actuellement aucune campagne de don de sang disponible. Revenez bientôt !</p>
+      </div>
+  <% } %>
+  
+  <div style="text-align: center;">
+      <a href="/" class="back-button">
+          ← Retour à l'accueil
+      </a>
+  </div>
+</div>
