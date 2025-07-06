@@ -1,0 +1,52 @@
+<div class="container mt-5">
+    <h2>Modifier votre rendez-vous</h2>
+
+    <form action="/api/appointments/<%= appointment._id %>/edit" method="POST">
+        <% 
+        const slotsByDay = {};
+        slots.forEach(slot => {
+            const dayStr = new Date(slot.day).toLocaleDateString('fr-FR');
+            if (!slotsByDay[dayStr]) {
+                slotsByDay[dayStr] = [];
+            }
+            slotsByDay[dayStr].push(slot);
+        });
+        %>
+
+        <% Object.keys(slotsByDay).forEach(day => { %>
+            <div class="day-slots mt-4">
+                <h4>📅 <%= day %></h4>
+                <ul class="slots-list">
+                    <% slotsByDay[day].forEach(slot => { 
+                        const isSelected = appointment.slot_id.toString() === slot._id.toString();
+                        const available = slot.maxPeople - slot.reserved;
+                    %>
+                        <li class="slot-item">
+                            🕑 <%= slot.startTime %> - <%= slot.endTime %>
+                            <span class="places-info">
+                                Places restantes: <%= available %>/<%= slot.maxPeople %>
+                            </span>
+
+                            <% if (available > 0 || isSelected) { %>
+                                <input type="radio" name="slot_id" value="<%= slot._id %>" 
+                                    id="slot-<%= slot._id %>" 
+                                    <%= isSelected ? 'checked' : '' %> 
+                                    required>
+                                <label for="slot-<%= slot._id %>">
+                                    <%= isSelected ? "Sélectionné" : "Choisir" %>
+                                </label>
+                            <% } else { %>
+                                <span class="full-label">Complet</span>
+                            <% } %>
+                        </li>
+                    <% }) %>
+                </ul>
+            </div>
+        <% }) %>
+
+        <div class="mt-4">
+            <button type="submit" class="btn btn-primary">Valider la modification</button>
+            <a href="/api/appointments" class="btn btn-secondary">Annuler</a>
+        </div>
+    </form>
+</div>

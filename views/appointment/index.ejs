@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!-- Affichage des messages flash -->
 <% if (locals.success) { %>
   <div class="alert alert-success">
@@ -34,3 +35,37 @@
     <button class="btn btn-primary">Prendre un rendez-vous</button>
   </a>
 </div>
+=======
+<h1>Mes Rendez-vous</h1>
+
+<% if (appointments && appointments.length > 0) { %>
+  <ul>
+    <% appointments.forEach(app => { %>
+      <li>
+        🗓️ <strong><%= app.campaign_id.title %></strong> — 
+        le <%= new Date(app.date_time).toLocaleDateString() %> à 
+        <%= new Date(app.date_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) %>
+
+        <!-- Annuler le rendez-vous -->
+        <form action="/api/appointments/<%= app._id %>/cancel?_method=DELETE" method="POST" style="display:inline;">
+          <button type="submit">❌ Annuler</button>
+        </form>
+        
+        <!-- Modifier le rendez-vous - lien direct -->
+        <a href="/api/appointments/<%= app._id %>/edit">
+          <button type="button">✏️ Modifier</button>
+        </a>
+      </li>
+    <% }) %>
+  </ul>
+<% } else { %>
+  <p>Vous n'avez pas encore de rendez-vous.</p>
+<% } %>
+
+<!-- Ajout d'un bouton pour retourner à la liste des campagnes -->
+<div class="mt-4">
+  <a href="/api/campaigns">
+    <button type="button">Voir les campagnes disponibles</button>
+  </a>
+</div>
+>>>>>>> origin/nathan

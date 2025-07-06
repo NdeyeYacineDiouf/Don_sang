@@ -147,3 +147,19 @@ footer {
     border-radius: 4px;
     font-family: inherit;
 }
+
+.slots-list {
+    list-style: none;
+    padding: 0;
+}
+.slot-item {
+    margin-bottom: 10px;
+}
+.full-label {
+    color: red;
+    font-weight: bold;
+}
+.places-info {
+    margin-left: 10px;
+    font-style: italic;
+}

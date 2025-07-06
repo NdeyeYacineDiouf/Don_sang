@@ -10,6 +10,13 @@ const AppointmentSchema = new mongoose.Schema({
     slot_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Slot',
+<<<<<<< HEAD
+=======
+        required: true
+    },
+    center_id: {
+        type: String, // ou ObjectId si tu gères les centres aussi
+>>>>>>> origin/nathan
         required: true
     },
     date_time: {
