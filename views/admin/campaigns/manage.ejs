@@ -1,45 +1,589 @@
-<% if (notification) { %>
-  <div style="background-color: lightgreen; padding: 10px; margin-bottom: 15px;">
-    <%= notification %>
-  </div>
-<% } %>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gérer les Campagnes - DonSang+ Admin</title>
+    <style>
+        /* CSS inspiré du dashboard et autres pages existantes */
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            min-height: 100vh;
+            color: #2d3748;
+        }
 
+        /* Header */
+        .manage-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            position: relative;
+        }
 
-<h2>Gérer les Campagnes</h2>
+        .manage-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+        }
 
-<% if (campaigns.length > 0) { %>
-  <table border="1" cellpadding="10" cellspacing="0">
-    <thead>
-      <tr>
-        <th>Titre</th>
-        <th>Description</th>
-        <th>Dates</th>
-        <th>Heures</th>
-        <th>Lieu</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% campaigns.forEach(campaign => { %>
-        <tr>
-          <td><%= campaign.title %></td>
-          <td><%= campaign.description %></td>
-          <td>du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %></td>
-          <td><%= campaign.startTime %> - <%= campaign.endTime %></td>
-          <td><%= campaign.location %></td>
-          <td>
-            <a href="/admin/campaigns/<%= campaign._id %>/edit">
-              <button style="background-color: orange; color: white;">Modifier 🖊️</button>
-            </a>
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-            <form action="/admin/campaigns/<%= campaign._id %>?_method=DELETE" method="POST" style="display:inline;">
-              <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette campagne ?')">Supprimer 🗑️</button>
-            </form>            
-          </td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-<% } else { %>
-  <p>Aucune campagne trouvée.</p>
-<% } %>
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #edf2f7;
+            transform: translateY(-1px);
+            text-decoration: none;
+            color: #2d3748;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
+
+        .page-subtitle {
+            color: #718096;
+            font-size: 1rem;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #dc3545;
+        }
+
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Container principal */
+        .manage-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+
+        /* Notifications */
+        .notification {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.75rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 4px 20px rgba(56, 161, 105, 0.3);
+            animation: slideInDown 0.5s ease-out;
+        }
+
+        .notification-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Actions en-tête */
+        .actions-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stats-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stats-icon {
+            width: 3rem;
+            height: 3rem;
+            background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+        }
+
+        .stats-text h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .stats-text p {
+            margin: 0.25rem 0 0 0;
+            color: #718096;
+            font-size: 0.875rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        /* Grille des campagnes */
+        .campaigns-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .campaign-card {
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .campaign-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .campaign-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+        }
+
+        .campaign-content {
+            padding: 2rem;
+        }
+
+        .campaign-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0 0 0.75rem 0;
+            line-height: 1.3;
+        }
+
+        .campaign-description {
+            color: #718096;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .campaign-details {
+            display: grid;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+        }
+
+        .detail-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+            background: #f7fafc;
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a5568;
+            flex-shrink: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #4a5568;
+            min-width: 4rem;
+        }
+
+        .detail-value {
+            color: #2d3748;
+        }
+
+        .campaign-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 1.5rem;
+        }
+
+        .action-btn {
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-edit {
+            background: linear-gradient(135deg, #ed8936 0%, #c05621 100%);
+            color: white;
+        }
+
+        .action-edit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.4);
+            text-decoration: none;
+            color: white;
+        }
+
+        .action-delete {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+        }
+
+        .action-delete:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(229, 62, 62, 0.4);
+        }
+
+        /* Animations */
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .campaign-card:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .campaign-card:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .campaign-card:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .campaigns-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 1.5rem;
+            }
+
+            .manage-container {
+                padding: 0 1.5rem 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .actions-header {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: stretch;
+                text-align: center;
+            }
+
+            .header-actions {
+                justify-content: center;
+            }
+
+            .campaigns-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .manage-container {
+                padding: 0 1rem 2rem;
+            }
+
+            .actions-header,
+            .campaign-card {
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .campaign-actions {
+                grid-template-columns: 1fr 1fr;
+                gap: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .manage-header {
+                padding: 1rem;
+            }
+
+            .campaign-content {
+                padding: 1.5rem;
+            }
+
+            .actions-header {
+                padding: 1rem;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn {
+                justify-content: center;
+            }
+
+            .campaign-actions {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="manage-header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="/admin/dashboard" class="back-button">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Retour
+                </a>
+                <div>
+                    <h1 class="page-title">Gérer les Campagnes</h1>
+                    <p class="page-subtitle">Modifiez, supprimez ou consultez vos campagnes de don de sang</p>
+                </div>
+            </div>
+            <div class="header-logo">
+                <div class="logo-icon">🩸</div>
+                DonSang+
+            </div>
+        </div>
+    </div>
+
+    <div class="manage-container">
+        <!-- Notification -->
+        <% if (notification) { %>
+        <div class="notification" id="notification">
+            <div class="notification-icon">✓</div>
+            <span id="notification-text"><%= notification %></span>
+        </div>
+        <% } %>
+
+        <!-- Actions en-tête -->
+        <div class="actions-header">
+            <div class="stats-info">
+                <div class="stats-icon">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                    </svg>
+                </div>
+                <div class="stats-text">
+                    <h3 id="campaign-count"><%= campaigns.length %> campagne<%= campaigns.length > 1 ? 's' : '' %></h3>
+                    <p>Gérez toutes vos collectes de don de sang</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <a href="/admin/campaigns/new" class="btn btn-primary">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                    </svg>
+                    Nouvelle campagne
+                </a>
+            </div>
+        </div>
+
+        <!-- Grille des campagnes -->
+        <% if (campaigns.length > 0) { %>
+        <div class="campaigns-grid">
+            <% campaigns.forEach(campaign => { %>
+            <div class="campaign-card">
+                <div class="campaign-content">
+                    <h3 class="campaign-title"><%= campaign.title %></h3>
+                    <p class="campaign-description">
+                        <%= campaign.description %>
+                    </p>
+                    
+                    <div class="campaign-details">
+                        <div class="detail-item">
+                            <div class="detail-icon">📅</div>
+                            <span class="detail-label">Dates :</span>
+                            <span class="detail-value">du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %></span>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon">🕒</div>
+                            <span class="detail-label">Heures :</span>
+                            <span class="detail-value"><%= campaign.startTime %> - <%= campaign.endTime %></span>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-icon">📍</div>
+                            <span class="detail-label">Lieu :</span>
+                            <span class="detail-value"><%= campaign.location %></span>
+                        </div>
+                    </div>
+                    
+                    <div class="campaign-actions">
+                        <a href="/admin/campaigns/<%= campaign._id %>/edit" class="action-btn action-edit">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                            </svg>
+                            Modifier 🖊️
+                        </a>
+                        <form action="/admin/campaigns/<%= campaign._id %>?_method=DELETE" method="POST" style="display: inline; width: 100%;">
+                            <button type="submit" class="action-btn action-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette campagne ?')" style="width: 100%;">
+                                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                </svg>
+                                Supprimer 🗑️
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+        </div>
+        <% } else { %>
+        <p>Aucune campagne trouvée.</p>
+        <% } %>
+    </div>
+
+    <script>
+        // Simulation de notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            if (notification) {
+                document.getElementById('notification-text').textContent = message;
+                notification.style.display = 'flex';
+                
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
