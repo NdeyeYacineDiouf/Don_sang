@@ -1,29 +1,458 @@
-<h1>Bienvenue sur le Tableau de Bord Admin</h1>
+<style>
+  /* CSS spécifique pour le dashboard admin */
+  
+  .dashboard-header {
+      margin-bottom: 2rem;
+  }
 
-<div style="margin-top: 20px; display: flex; flex-direction: column; gap: 15px;">
+  .dashboard-title {
+      color: #2d3748;
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+  }
 
-  <a href="/admin/campaigns/new">
-    <button style="padding: 10px 20px; font-size: 16px; background-color: green; color: white; border: none; border-radius: 5px;">
-      ➕ Créer une Campagne
-    </button>
+  .dashboard-subtitle {
+      color: #718096;
+      font-size: 1.1rem;
+  }
+
+  /* Grille des actions principales */
+  .dashboard-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+  }
+
+  .action-card {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      border: 1px solid #e2e8f0;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+  }
+
+  .action-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      transition: all 0.3s ease;
+  }
+
+  .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+      color: inherit;
+  }
+
+  .action-card.primary::before {
+      background: linear-gradient(90deg, #38a169 0%, #2f855a 100%);
+  }
+
+  .action-card.primary:hover::before {
+      height: 6px;
+  }
+
+  .action-card.secondary::before {
+      background: linear-gradient(90deg, #ed8936 0%, #c05621 100%);
+  }
+
+  .action-card.secondary:hover::before {
+      height: 6px;
+  }
+
+  .action-card.info::before {
+      background: linear-gradient(90deg, #3182ce 0%, #2c5282 100%);
+  }
+
+  .action-card.info:hover::before {
+      height: 6px;
+  }
+
+  .action-card.danger::before {
+      background: linear-gradient(90deg, #e53e3e 0%, #c53030 100%);
+  }
+
+  .action-card.danger:hover::before {
+      height: 6px;
+  }
+
+  .action-icon {
+      width: 3rem;
+      height: 3rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+  }
+
+  .action-card.primary .action-icon {
+      background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+      color: white;
+  }
+
+  .action-card.secondary .action-icon {
+      background: linear-gradient(135deg, #ed8936 0%, #c05621 100%);
+      color: white;
+  }
+
+  .action-card.info .action-icon {
+      background: linear-gradient(135deg, #3182ce 0%, #2c5282 100%);
+      color: white;
+  }
+
+  .action-card.danger .action-icon {
+      background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+      color: white;
+  }
+
+  .action-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.75rem;
+  }
+
+  .action-description {
+      color: #718096;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 1.5rem;
+  }
+
+  .action-arrow {
+      display: flex;
+      align-items: center;
+      color: #4a5568;
+      font-size: 0.875rem;
+      font-weight: 500;
+  }
+
+  .action-arrow svg {
+      margin-left: 0.5rem;
+      transition: transform 0.3s ease;
+  }
+
+  .action-card:hover .action-arrow svg {
+      transform: translateX(4px);
+  }
+
+  /* Section statistiques rapides */
+  .quick-stats {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+  }
+
+  .stats-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+  }
+
+  .stats-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+  }
+
+  .stats-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #2d3748;
+  }
+
+  .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+  }
+
+  .stat-item {
+      text-align: center;
+      padding: 1.5rem;
+      background: #f7fafc;
+      border-radius: 0.75rem;
+      border: 1px solid #e2e8f0;
+  }
+
+  .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+      display: block;
+  }
+
+  .stat-label {
+      color: #718096;
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+  }
+
+  /* Section d'aide */
+  .help-section {
+      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+      padding: 2rem;
+      border-radius: 1rem;
+      border: 1px solid #e2e8f0;
+      text-align: center;
+  }
+
+  .help-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.75rem;
+  }
+
+  .help-description {
+      color: #718096;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+  }
+
+  .help-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: #2d3748;
+      text-decoration: none;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+  }
+
+  .help-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+      color: #2d3748;
+  }
+
+  /* Animations */
+  .action-card {
+      animation: fadeInUp 0.6s ease-out;
+  }
+
+  .action-card:nth-child(2) {
+      animation-delay: 0.1s;
+  }
+
+  .action-card:nth-child(3) {
+      animation-delay: 0.2s;
+  }
+
+  .action-card:nth-child(4) {
+      animation-delay: 0.3s;
+  }
+
+  .quick-stats {
+      animation: fadeInUp 0.6s ease-out 0.4s;
+      animation-fill-mode: both;
+  }
+
+  .help-section {
+      animation: fadeInUp 0.6s ease-out 0.5s;
+      animation-fill-mode: both;
+  }
+
+  @keyframes fadeInUp {
+      from {
+          opacity: 0;
+          transform: translateY(30px);
+      }
+      to {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+      .dashboard-title {
+          font-size: 1.875rem;
+      }
+
+      .dashboard-actions {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+      }
+
+      .action-card {
+          padding: 1.5rem;
+      }
+
+      .stats-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+      }
+
+      .quick-stats,
+      .help-section {
+          padding: 1.5rem;
+      }
+  }
+
+  @media (max-width: 480px) {
+      .stats-grid {
+          grid-template-columns: 1fr;
+      }
+
+      .stat-number {
+          font-size: 2rem;
+      }
+  }
+</style>
+
+<div class="dashboard-header">
+  <h1 class="dashboard-title">Tableau de bord</h1>
+  <p class="dashboard-subtitle">
+      Gérez votre plateforme de don de sang et supervisez les campagnes en cours.
+  </p>
+</div>
+
+<!-- Actions principales -->
+<div class="dashboard-actions">
+  <a href="/admin/campaigns/new" class="action-card primary">
+      <div class="action-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+          </svg>
+      </div>
+      <h3 class="action-title">Créer une Campagne</h3>
+      <p class="action-description">
+          Lancez une nouvelle campagne de don de sang avec création automatique des créneaux.
+      </p>
+      <div class="action-arrow">
+          Commencer
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+      </div>
   </a>
 
-  <a href="/admin/campaigns/manage">
-    <button style="padding: 10px 20px; font-size: 16px; background-color: orange; color: white; border: none; border-radius: 5px;">
-      ✏️ Modifier / Supprimer des Campagnes
-    </button>
+  <a href="/admin/campaigns/manage" class="action-card secondary">
+      <div class="action-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+          </svg>
+      </div>
+      <h3 class="action-title">Gérer les Campagnes</h3>
+      <p class="action-description">
+          Modifiez, supprimez ou consultez les détails des campagnes existantes.
+      </p>
+      <div class="action-arrow">
+          Gérer
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+      </div>
   </a>
 
-  <a href="/admin/stats">
-    <button style="padding: 10px 20px; font-size: 16px; background-color: blue; color: white; border: none; border-radius: 5px;">
-      📊 Voir les Statistiques
-    </button>
+  <a href="/admin/stats" class="action-card info">
+      <div class="action-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+      </div>
+      <h3 class="action-title">Statistiques</h3>
+      <p class="action-description">
+          Consultez les analyses détaillées et les performances de vos campagnes.
+      </p>
+      <div class="action-arrow">
+          Analyser
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+      </div>
   </a>
 
-  <a href="/admin/logout">
-    <button style="padding: 10px 20px; font-size: 16px; background-color: red; color: white; border: none; border-radius: 5px;">
-      🚪 Se Déconnecter
-    </button>
+  <a href="/admin/logout" class="action-card danger">
+      <div class="action-icon">
+          <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+          </svg>
+      </div>
+      <h3 class="action-title">Se Déconnecter</h3>
+      <p class="action-description">
+          Fermez votre session d'administration de manière sécurisée.
+      </p>
+      <div class="action-arrow">
+          Quitter
+          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+          </svg>
+      </div>
   </a>
+</div>
 
+<!-- Statistiques rapides -->
+<div class="quick-stats">
+  <div class="stats-header">
+      <div class="stats-icon">
+          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+          </svg>
+      </div>
+      <h2 class="stats-title">Aperçu rapide</h2>
+  </div>
+  
+  <div class="stats-grid">
+      <div class="stat-item">
+          <span class="stat-number">12</span>
+          <span class="stat-label">Campagnes actives</span>
+      </div>
+      <div class="stat-item">
+          <span class="stat-number">847</span>
+          <span class="stat-label">Rendez-vous ce mois</span>
+      </div>
+      <div class="stat-item">
+          <span class="stat-number">1,234</span>
+          <span class="stat-label">Donneurs inscrits</span>
+      </div>
+      <div class="stat-item">
+          <span class="stat-number">95%</span>
+          <span class="stat-label">Taux de présence</span>
+      </div>
+  </div>
+</div>
+
+<!-- Section d'aide -->
+<div class="help-section">
+  <h3 class="help-title">Besoin d'aide ?</h3>
+  <p class="help-description">
+      Consultez notre documentation ou contactez le support technique pour toute assistance.
+  </p>
+  <a href="mailto:support@donsang.fr" class="help-button">
+      <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+      </svg>
+      Contacter le support
+  </a>
 </div>
