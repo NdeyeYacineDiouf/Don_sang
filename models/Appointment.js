@@ -1,3 +1,4 @@
+// appointment.js (mise à jour du modèle)
 const mongoose = require('mongoose');
 
 const AppointmentSchema = new mongoose.Schema({
@@ -6,8 +7,9 @@ const AppointmentSchema = new mongoose.Schema({
         ref: 'Campaign',
         required: true
     },
-    center_id: {
-        type: String, // ou ObjectId si tu gères les centres aussi
+    slot_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Slot',
         required: true
     },
     date_time: {

@@ -1,6 +1,36 @@
-<h1>Liste des Rendez-vous</h1>
+<!-- Affichage des messages flash -->
+<% if (locals.success) { %>
+  <div class="alert alert-success">
+    <%= success %>
+  </div>
+<% } %>
 
-<p>Ici s'afficheront tous les rendez-vous pris.</p>
-<a href="/api/campaigns">
-    <button style="padding: 10px 20px; font-size: 16px;">Prendre Rendez-vous</button>
+<% if (locals.error) { %>
+  <div class="alert alert-danger">
+    <%= error %>
+  </div>
+<% } %>
+
+<h1>Mes Rendez-vous</h1>
+
+<% if (appointments && appointments.length > 0) { %>
+  <div class="appointments-list">
+    <% appointments.forEach(appointment => { %>
+      <div class="appointment-card">
+        <h3><%= appointment.campaign_id.title %></h3>
+        <p><strong>Date:</strong> <%= appointment.date_time.toLocaleDateString() %></p>
+        <p><strong>Horaire:</strong> <%= appointment.slot_id.startTime %> - <%= appointment.slot_id.endTime %></p>
+        <p><strong>Lieu:</strong> <%= appointment.campaign_id.location %></p>
+        <p class="reservation-date">Réservé le <%= appointment.createdAt.toLocaleDateString() %> à <%= appointment.createdAt.toLocaleTimeString() %></p>
+      </div>
+    <% }); %>
+  </div>
+<% } else { %>
+  <p>Vous n'avez pas encore de rendez-vous programmés.</p>
+<% } %>
+
+<div class="actions">
+  <a href="/api/campaigns">
+    <button class="btn btn-primary">Prendre un rendez-vous</button>
   </a>
+</div>
