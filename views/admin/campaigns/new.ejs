@@ -1,48 +1,834 @@
-<h2>Créer une nouvelle campagne</h2>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créer une Campagne - DonSang+ Admin</title>
+    <style>
+        /* CSS inspiré du dashboard et login existants */
+        
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            min-height: 100vh;
+            color: #2d3748;
+        }
 
-<form action="/admin/campaigns" method="POST">
+        /* Header */
+        .campaign-header {
+            background: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            position: relative;
+        }
 
-  <label>Titre :</label>
-  <input type="text" name="title" required> 
+        .campaign-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+        }
 
-  <label>Description :</label>
-  <textarea name="description"></textarea>
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
 
-  <label>Date de début :</label>
-  <input type="date" name="startDate" required> 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
 
-  <label>Date de fin :</label>
-  <input type="date" name="endDate" required> 
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            color: #4a5568;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
 
-  <label>Heure de début :</label>
-  <input type="time" name="startTime" required> 
+        .back-button:hover {
+            background: #edf2f7;
+            transform: translateY(-1px);
+            text-decoration: none;
+            color: #2d3748;
+        }
 
-  <label>Heure de fin :</label>
-  <input type="time" name="endTime" required> 
+        .campaign-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
 
-  <label>Lieu :</label>
-  <input type="text" name="location" required>
-   
-  <label>Nombre maximum de personnes par créneau :</label>
-  <input type="number" name="maxPeoplePerSlot" required min="1">
-  
-  <hr>
-  <div style="margin: 15px 0; padding: 10px; background-color: #f0f0f0; border-radius: 5px;">
-    <label style="font-weight: bold;">
-      <input type="checkbox" name="generateSlots" value="true" checked> 
-      Générer automatiquement les créneaux horaires
-    </label>
-    
-    <div style="margin-top: 10px;">
-      <label>Durée des créneaux :</label>
-      <select name="slotDuration">
-        <option value="30">30 minutes</option>
-        <option value="60" selected>1 heure</option>
-        <option value="90">1 heure 30</option>
-        <option value="120">2 heures</option>
-      </select>
+        .campaign-subtitle {
+            color: #718096;
+            font-size: 1rem;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #dc3545;
+        }
+
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        /* Container principal */
+        .campaign-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+
+        /* Progress Steps */
+        .progress-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            right: 1.5rem;
+            height: 2px;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-circle {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .step-circle.active {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        }
+
+        .step-circle.completed {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            color: white;
+        }
+
+        .step-circle.inactive {
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #a0aec0;
+        }
+
+        .step-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-align: center;
+            color: #718096;
+        }
+
+        .step-label.active {
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        /* Formulaire */
+        .form-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: slideInUp 0.4s ease-out;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-grid.two-cols {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            padding: 0.875rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #dc3545;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-checkbox {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: #dc3545;
+        }
+
+        .checkbox-label {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .checkbox-description {
+            color: #718096;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .select-group {
+            margin-top: 1rem;
+        }
+
+        /* Boutons de navigation */
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 0.875rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-secondary {
+            background: #f7fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #edf2f7;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(56, 161, 105, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Résumé */
+        .summary-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .summary-value {
+            color: #2d3748;
+            font-weight: 500;
+        }
+
+        /* Animations */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-container {
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .campaign-container {
+                padding: 0 1.5rem 2rem;
+            }
+
+            .form-grid.two-cols {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .campaign-container {
+                padding: 0 1rem 2rem;
+            }
+
+            .progress-container,
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .progress-steps {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .progress-steps::before {
+                display: none;
+            }
+
+            .step-circle {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            .campaign-title {
+                font-size: 1.5rem;
+            }
+
+            .form-navigation {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .campaign-header {
+                padding: 1rem;
+            }
+
+            .form-container {
+                padding: 1rem;
+            }
+
+            .checkbox-group {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="campaign-header">
+        <div class="header-content">
+            <div class="header-left">
+                <a href="/admin/dashboard" class="back-button">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Retour
+                </a>
+                <div>
+                    <h1 class="campaign-title">Créer une Campagne</h1>
+                    <p class="campaign-subtitle">Organisez une nouvelle collecte de don de sang</p>
+                </div>
+            </div>
+            <div class="header-logo">
+                <div class="logo-icon">🩸</div>
+                DonSang+
+            </div>
+        </div>
     </div>
-  </div>
-  
-  <button type="submit" style="margin-top: 15px;">Créer la campagne</button>
-</form>
+
+    <div class="campaign-container">
+        <!-- Progress Steps -->
+        <div class="progress-container">
+            <div class="progress-steps">
+                <div class="progress-step">
+                    <div class="step-circle active" id="step-1">1</div>
+                    <div class="step-label active">Informations</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle inactive" id="step-2">2</div>
+                    <div class="step-label">Planning</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle inactive" id="step-3">3</div>
+                    <div class="step-label">Configuration</div>
+                </div>
+                <div class="progress-step">
+                    <div class="step-circle inactive" id="step-4">4</div>
+                    <div class="step-label">Résumé</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire -->
+        <form action="/admin/campaigns" method="POST" id="campaignForm">
+            <div class="form-container">
+                
+                <!-- Étape 1: Informations générales -->
+                <div class="form-section active" id="section-1">
+                    <h2 class="section-title">Informations générales</h2>
+                    <p class="section-subtitle">Définissez le titre, la description et le lieu de votre campagne de don de sang.</p>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="title">Titre de la campagne *</label>
+                            <input type="text" id="title" name="title" class="form-input" 
+                                   placeholder="Ex: Collecte de sang - Hôpital Saint-Louis" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="location">Lieu de la collecte *</label>
+                            <input type="text" id="location" name="location" class="form-input" 
+                                   placeholder="Ex: Centre communal, 123 Rue de la Paix, Paris" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="description">Description détaillée</label>
+                            <textarea id="description" name="description" class="form-input form-textarea" 
+                                      placeholder="Décrivez l'objectif de cette campagne, les équipes présentes, les conditions particulières..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 2: Planning -->
+                <div class="form-section" id="section-2">
+                    <h2 class="section-title">Planning de la campagne</h2>
+                    <p class="section-subtitle">Définissez les dates et horaires de votre collecte de don de sang.</p>
+                    
+                    <div class="form-grid two-cols">
+                        <div class="form-group">
+                            <label class="form-label" for="startDate">Date de début *</label>
+                            <input type="date" id="startDate" name="startDate" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="endDate">Date de fin *</label>
+                            <input type="date" id="endDate" name="endDate" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="startTime">Heure de début *</label>
+                            <input type="time" id="startTime" name="startTime" class="form-input" value="09:00" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="endTime">Heure de fin *</label>
+                            <input type="time" id="endTime" name="endTime" class="form-input" value="17:00" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 3: Configuration -->
+                <div class="form-section" id="section-3">
+                    <h2 class="section-title">Configuration des créneaux</h2>
+                    <p class="section-subtitle">Définissez la capacité d'accueil et la génération automatique des créneaux horaires.</p>
+                    
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="maxPeoplePerSlot">Nombre maximum de donneurs par créneau *</label>
+                            <input type="number" id="maxPeoplePerSlot" name="maxPeoplePerSlot" 
+                                   class="form-input" min="1" max="50" value="5" required>
+                        </div>
+                        
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="generateSlots" name="generateSlots" 
+                                       class="form-checkbox" value="true" checked>
+                                <div>
+                                    <label class="checkbox-label" for="generateSlots">
+                                        Générer automatiquement les créneaux horaires
+                                    </label>
+                                    <div class="checkbox-description">
+                                        Les créneaux seront créés automatiquement selon la durée choisie ci-dessous
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="select-group" id="slotDurationGroup">
+                                <label class="form-label" for="slotDuration">Durée de chaque créneau</label>
+                                <select id="slotDuration" name="slotDuration" class="form-input">
+                                    <option value="30">30 minutes</option>
+                                    <option value="60" selected>1 heure</option>
+                                    <option value="90">1 heure 30</option>
+                                    <option value="120">2 heures</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 4: Résumé -->
+                <div class="form-section" id="section-4">
+                    <h2 class="section-title">Résumé de la campagne</h2>
+                    <p class="section-subtitle">Vérifiez les informations saisies avant de créer votre campagne.</p>
+                    
+                    <div class="summary-container">
+                        <div class="summary-item">
+                            <span class="summary-label">Titre :</span>
+                            <span class="summary-value" id="summary-title">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Lieu :</span>
+                            <span class="summary-value" id="summary-location">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Période :</span>
+                            <span class="summary-value" id="summary-dates">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Horaires :</span>
+                            <span class="summary-value" id="summary-times">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Capacité par créneau :</span>
+                            <span class="summary-value" id="summary-capacity">-</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="summary-label">Durée des créneaux :</span>
+                            <span class="summary-value" id="summary-duration">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" onclick="previousStep()" disabled>
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Précédent
+                    </button>
+                    
+                    <button type="button" class="btn btn-primary" id="nextBtn" onclick="nextStep()">
+                        Suivant
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                    
+                    <button type="submit" class="btn btn-success" id="submitBtn" style="display: none;">
+                        <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                        </svg>
+                        Créer la campagne
+                    </button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function updateStepDisplay() {
+            // Masquer toutes les sections
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById(`section-${i}`).classList.remove('active');
+                const stepCircle = document.getElementById(`step-${i}`);
+                const stepLabel = stepCircle.parentElement.querySelector('.step-label');
+                
+                stepCircle.className = 'step-circle inactive';
+                stepLabel.className = 'step-label';
+            }
+
+            // Afficher la section actuelle
+            document.getElementById(`section-${currentStep}`).classList.add('active');
+            
+            // Mettre à jour les indicateurs de progression
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepCircle = document.getElementById(`step-${i}`);
+                const stepLabel = stepCircle.parentElement.querySelector('.step-label');
+                
+                if (i < currentStep) {
+                    stepCircle.className = 'step-circle completed';
+                    stepCircle.innerHTML = '✓';
+                } else if (i === currentStep) {
+                    stepCircle.className = 'step-circle active';
+                    stepCircle.innerHTML = i;
+                    stepLabel.className = 'step-label active';
+                } else {
+                    stepCircle.className = 'step-circle inactive';
+                    stepCircle.innerHTML = i;
+                }
+            }
+
+            // Gérer les boutons de navigation
+            document.getElementById('prevBtn').disabled = currentStep === 1;
+            
+            if (currentStep === totalSteps) {
+                document.getElementById('nextBtn').style.display = 'none';
+                document.getElementById('submitBtn').style.display = 'inline-flex';
+                updateSummary();
+            } else {
+                document.getElementById('nextBtn').style.display = 'inline-flex';
+                document.getElementById('submitBtn').style.display = 'none';
+            }
+        }
+
+        function nextStep() {
+            if (validateCurrentStep() && currentStep < totalSteps) {
+                currentStep++;
+                updateStepDisplay();
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateStepDisplay();
+            }
+        }
+
+        function validateCurrentStep() {
+            const section = document.getElementById(`section-${currentStep}`);
+            const requiredFields = section.querySelectorAll('input[required], textarea[required], select[required]');
+            
+            for (let field of requiredFields) {
+                if (!field.value.trim()) {
+                    field.focus();
+                    field.style.borderColor = '#e53e3e';
+                    setTimeout(() => {
+                        field.style.borderColor = '#e2e8f0';
+                    }, 3000);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function updateSummary() {
+            document.getElementById('summary-title').textContent = 
+                document.getElementById('title').value || '-';
+            
+            document.getElementById('summary-location').textContent = 
+                document.getElementById('location').value || '-';
+            
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            let dateText = '-';
+            if (startDate && endDate) {
+                if (startDate === endDate) {
+                    dateText = `Le ${new Date(startDate).toLocaleDateString('fr-FR')}`;
+                } else {
+                    dateText = `Du ${new Date(startDate).toLocaleDateString('fr-FR')} au ${new Date(endDate).toLocaleDateString('fr-FR')}`;
+                }
+            }
+            document.getElementById('summary-dates').textContent = dateText;
+            
+            const startTime = document.getElementById('startTime').value;
+            const endTime = document.getElementById('endTime').value;
+            document.getElementById('summary-times').textContent = 
+                (startTime && endTime) ? `${startTime} - ${endTime}` : '-';
+            
+            document.getElementById('summary-capacity').textContent = 
+                document.getElementById('maxPeoplePerSlot').value + ' donneurs' || '-';
+            
+            const duration = document.getElementById('slotDuration').value;
+            const durationText = {
+                '30': '30 minutes',
+                '60': '1 heure',
+                '90': '1 heure 30',
+                '120': '2 heures'
+            };
+            document.getElementById('summary-duration').textContent = 
+                durationText[duration] || '-';
+        }
+
+        // Gestion de l'affichage conditionnel du groupe durée
+        document.getElementById('generateSlots').addEventListener('change', function() {
+            const group = document.getElementById('slotDurationGroup');
+            group.style.display = this.checked ? 'block' : 'none';
+        });
+
+        // Initialisation
+        updateStepDisplay();
+
+        // Validation des dates
+        document.getElementById('startDate').addEventListener('change', function() {
+            const endDateField = document.getElementById('endDate');
+            endDateField.min = this.value;
+            if (endDateField.value && endDateField.value < this.value) {
+                endDateField.value = this.value;
+            }
+        });
+
+        // Validation des heures
+        document.getElementById('startTime').addEventListener('change', function() {
+            const endTimeField = document.getElementById('endTime');
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (startDate === endDate && endTimeField.value <= this.value) {
+                const startTime = new Date(`1970-01-01T${this.value}:00`);
+                startTime.setHours(startTime.getHours() + 1);
+                endTimeField.value = startTime.toTimeString().substr(0, 5);
+            }
+        });
+    </script>
+</body>
+</html>
