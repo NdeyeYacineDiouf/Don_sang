@@ -1,7 +1,371 @@
-<h1>Connexion Administrateur</h1>
+<style>
+  /* CSS spécifique pour la page de connexion admin */
+  
+  body {
+      margin: 0;
+      padding: 1.5rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+      background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+  }
 
-<form action="/admin/login" method="POST">
-  <input type="email" name="email" placeholder="Email Admin" required><br><br>
-  <input type="password" name="password" placeholder="Mot de passe" required><br><br>
-  <button type="submit">Se connecter</button>
-</form>
+  .admin-login-container {
+      background: white;
+      padding: 2rem 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      overflow: hidden;
+      max-height: 85vh;
+      overflow-y: auto;
+  }
+
+  .admin-login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #dc3545 0%, #c82333 100%);
+  }
+
+  .admin-header {
+      text-align: center;
+      margin-bottom: 1.25rem;
+  }
+
+  .admin-logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 0.25rem;
+  }
+
+  .admin-logo-icon {
+      width: 1.75rem;
+      height: 1.75rem;
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      border-radius: 0.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 0.9rem;
+  }
+
+  .admin-logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #2d3748;
+  }
+
+  .admin-subtitle {
+      color: #718096;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+  }
+
+  .admin-title {
+      color: #2d3748;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+  }
+
+  .admin-description {
+      color: #718096;
+      font-size: 0.85rem;
+      line-height: 1.3;
+  }
+
+  .admin-form {
+      margin-top: 1.25rem;
+  }
+
+  .form-group {
+      margin-bottom: 1rem;
+  }
+
+  .form-group label {
+      display: block;
+      margin-bottom: 0.35rem;
+      color: #2d3748;
+      font-weight: 600;
+      font-size: 0.85rem;
+  }
+
+  .form-control {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.4rem;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background-color: #f8fafc;
+  }
+
+  .form-control:focus {
+      outline: none;
+      border-color: #dc3545;
+      background-color: white;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+  }
+
+  .admin-btn {
+      width: 100%;
+      padding: 0.85rem;
+      background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+      color: white;
+      border: none;
+      border-radius: 0.4rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 0.75rem;
+      position: relative;
+      overflow: hidden;
+  }
+
+  .admin-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+  }
+
+  .admin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(220, 53, 69, 0.4);
+  }
+
+  .admin-btn:hover::before {
+      left: 100%;
+  }
+
+  .admin-btn:active {
+      transform: translateY(0);
+  }
+
+  .admin-footer {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e2e8f0;
+  }
+
+  .admin-footer p {
+      color: #718096;
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+  }
+
+  .admin-footer a {
+      color: #dc3545;
+      text-decoration: none;
+      font-weight: 500;
+  }
+
+  .admin-footer a:hover {
+      text-decoration: underline;
+  }
+
+  .security-notice {
+      background: #fef5e7;
+      border: 1px solid #f6d55c;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+  }
+
+  .security-icon {
+      color: #d69e2e;
+      font-size: 1.25rem;
+  }
+
+  .security-text {
+      color: #744210;
+      font-size: 0.875rem;
+      line-height: 1.4;
+  }
+
+  /* Animation d'entrée */
+  .admin-login-container {
+      animation: slideInUp 0.6s ease-out;
+  }
+
+  @keyframes slideInUp {
+      from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+      }
+      to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+      }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+      body {
+          padding: 1rem;
+      }
+      
+      .admin-login-container {
+          padding: 2rem 1.5rem;
+          max-width: 100%;
+          max-height: 95vh;
+      }
+
+      .admin-title {
+          font-size: 1.35rem;
+      }
+
+      .admin-logo-text {
+          font-size: 1.1rem;
+      }
+
+      .admin-description {
+          font-size: 0.85rem;
+      }
+  }
+
+  @media (max-width: 480px) {
+      body {
+          padding: 0.75rem;
+      }
+      
+      .admin-login-container {
+          padding: 1.5rem 1.25rem;
+          max-height: 98vh;
+      }
+      
+      .admin-title {
+          font-size: 1.25rem;
+      }
+
+      .admin-logo {
+          flex-direction: column;
+          gap: 0.5rem;
+      }
+
+      .form-control {
+          padding: 0.65rem 0.75rem;
+      }
+  }
+
+  @media (max-height: 600px) {
+      .admin-login-container {
+          max-height: 95vh;
+          padding: 1.5rem;
+      }
+      
+      .admin-header {
+          margin-bottom: 1rem;
+      }
+      
+      .admin-form {
+          margin-top: 1rem;
+      }
+      
+      .admin-footer {
+          margin-top: 1rem;
+          padding-top: 1rem;
+      }
+  }
+
+  /* Effet de particules de fond (optionnel) */
+  body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+          radial-gradient(circle at 20% 80%, rgba(220, 53, 69, 0.1) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(220, 53, 69, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+  }
+</style>
+
+<div class="admin-login-container">
+  <div class="admin-header">
+      <div class="admin-logo">
+          <div class="admin-logo-icon">🩸</div>
+          <span class="admin-logo-text">DonSang+</span>
+      </div>
+      <div class="admin-subtitle">Espace Administrateur</div>
+      <h1 class="admin-title">Connexion Admin</h1>
+      <p class="admin-description">
+          Accédez au tableau de bord d'administration pour gérer les campagnes et superviser la plateforme.
+      </p>
+  </div>
+
+  <div class="security-notice">
+      <span class="security-icon">🔒</span>
+      <div class="security-text">
+          <strong>Accès sécurisé :</strong> Cette zone est réservée aux administrateurs autorisés uniquement.
+      </div>
+  </div>
+
+  <form class="admin-form" action="/admin/login" method="POST">
+      <div class="form-group">
+          <label for="email">Adresse email administrateur</label>
+          <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              class="form-control" 
+              placeholder="admin@mail.com" 
+              required 
+              autocomplete="email"
+          >
+      </div>
+
+      <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              class="form-control" 
+              placeholder="••••••••" 
+              required 
+              autocomplete="current-password"
+          >
+      </div>
+
+      <button type="submit" class="admin-btn">
+          Se connecter à l'administration
+      </button>
+  </form>
+
+  <div class="admin-footer">
+      <p>Problème de connexion ?</p>
+      <a href="mailto:support@donsang.fr">Contacter le support technique</a>
+      <p style="margin-top: 1rem;">
+          <a href="/">← Retour au site public</a>
+      </p>
+  </div>
+</div>

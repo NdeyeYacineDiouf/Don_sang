@@ -4,7 +4,7 @@ const adminPassword = "admin1234";
 exports.loginForm = (req, res) => {
   res.render("admin/login", { 
     pageTitle: "Connexion Administrateur",
-    layout: "adminLayout"
+    layout: false 
   });
 };
 
