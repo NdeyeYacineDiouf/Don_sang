@@ -1,0 +1,494 @@
+<style>
+    /* CSS spécifique pour la page À propos */
+    
+    .about-container {
+        background-color: #fdf2f8;
+        min-height: 80vh;
+    }
+
+    .hero-about {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%);
+    }
+
+    .hero-about h1 {
+        color: #2d3748;
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+
+    .hero-about p {
+        color: #718096;
+        font-size: 1.25rem;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        line-height: 1.6;
+    }
+
+    .content-section {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 4rem 2rem;
+    }
+
+    .mission-section {
+        background: white;
+        padding: 3rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .mission-section h2 {
+        color: #2d3748;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .mission-icon {
+        width: 2.5rem;
+        height: 2.5rem;
+        color: #dc3545;
+    }
+
+    .mission-text {
+        color: #4a5568;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+
+    .value-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: all 0.3s ease;
+        border-top: 4px solid #dc3545;
+    }
+
+    .value-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .value-icon {
+        width: 3rem;
+        height: 3rem;
+        color: #dc3545;
+        margin: 0 auto 1.5rem;
+    }
+
+    .value-title {
+        color: #2d3748;
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .value-description {
+        color: #718096;
+        line-height: 1.6;
+    }
+
+    .stats-section {
+        background: #dc3545;
+        padding: 4rem 2rem;
+        border-radius: 1rem;
+        color: white;
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .stats-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 3rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 3rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .team-section {
+        background: white;
+        padding: 3rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .team-section h2 {
+        color: #2d3748;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
+
+    .team-description {
+        color: #718096;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+    }
+
+    .contact-cta {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 0.75rem 2rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .contact-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .join-section {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        padding: 3rem;
+        border-radius: 1rem;
+        text-align: center;
+        border: 2px solid #e2e8f0;
+    }
+
+    .join-section h2 {
+        color: #2d3748;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .join-section p {
+        color: #718096;
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    .join-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .btn-primary-large {
+        background: #dc3545;
+        color: white;
+        padding: 0.875rem 2rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-large:hover {
+        background: #c82333;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(220, 53, 69, 0.3);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-secondary-large {
+        background: white;
+        color: #2d3748;
+        padding: 0.875rem 2rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-secondary-large:hover {
+        background: #f7fafc;
+        border-color: #cbd5e0;
+        color: #2d3748;
+        text-decoration: none;
+    }
+
+    /* Animations */
+    .mission-section {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .value-card {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    .value-card:nth-child(2) {
+        animation-delay: 0.1s;
+    }
+
+    .value-card:nth-child(3) {
+        animation-delay: 0.2s;
+    }
+
+    .stats-section {
+        animation: fadeInUp 0.6s ease-out 0.3s;
+        animation-fill-mode: both;
+    }
+
+    .team-section {
+        animation: fadeInUp 0.6s ease-out 0.4s;
+        animation-fill-mode: both;
+    }
+
+    .join-section {
+        animation: fadeInUp 0.6s ease-out 0.5s;
+        animation-fill-mode: both;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .hero-about {
+            padding: 3rem 1rem;
+        }
+
+        .hero-about h1 {
+            font-size: 2.5rem;
+        }
+
+        .content-section {
+            padding: 2rem 1rem;
+        }
+
+        .mission-section,
+        .team-section {
+            padding: 2rem;
+        }
+
+        .mission-section h2 {
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .values-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .value-card {
+            padding: 2rem;
+        }
+
+        .stats-section {
+            padding: 3rem 1rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .join-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-primary-large,
+        .btn-secondary-large {
+            width: 100%;
+            max-width: 300px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .hero-about h1 {
+            font-size: 2rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+
+<div class="about-container">
+    <!-- Hero Section -->
+    <section class="hero-about">
+        <h1>À propos de DonSang+</h1>
+        <p>
+            Une plateforme moderne et accessible pour faciliter le don de sang 
+            et sauver des vies dans notre communauté.
+        </p>
+    </section>
+
+    <div class="content-section">
+        <!-- Mission Section -->
+        <section class="mission-section">
+            <h2>
+                <svg class="mission-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                </svg>
+                Notre Mission
+            </h2>
+            <p class="mission-text">
+                DonSang+ a été créé avec une mission claire : <strong>démocratiser et simplifier le don de sang</strong>. 
+                Nous croyons que chaque personne devrait pouvoir contribuer facilement à sauver des vies. 
+                Notre plateforme connecte les donneurs volontaires avec les centres de collecte, 
+                facilitant l'organisation des campagnes et la prise de rendez-vous. 
+                Ensemble, nous construisons une communauté solidaire où chaque don compte.
+            </p>
+        </section>
+
+        <!-- Values Section -->
+        <section class="values-grid">
+            <div class="value-card">
+                <svg class="value-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"/>
+                </svg>
+                <h3 class="value-title">Accessibilité</h3>
+                <p class="value-description">
+                    Une plateforme simple et intuitive, accessible à tous, 
+                    pour que donner son sang soit un geste facile et naturel.
+                </p>
+            </div>
+
+            <div class="value-card">
+                <svg class="value-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                <h3 class="value-title">Sécurité</h3>
+                <p class="value-description">
+                    Respect strict des protocoles médicaux et protection 
+                    des données personnelles de nos utilisateurs.
+                </p>
+            </div>
+
+            <div class="value-card">
+                <svg class="value-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <h3 class="value-title">Solidarité</h3>
+                <p class="value-description">
+                    Construire une communauté unie autour de l'entraide 
+                    et du partage pour sauver des vies ensemble.
+                </p>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="stats-section">
+            <h2 class="stats-title">Notre Impact</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">15,000+</span>
+                    <span class="stat-label">Donneurs actifs</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">50,000+</span>
+                    <span class="stat-label">Dons collectés</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">200+</span>
+                    <span class="stat-label">Centres partenaires</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">150,000+</span>
+                    <span class="stat-label">Vies sauvées</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="team-section">
+            <h2>Notre Équipe</h2>
+            <p class="team-description">
+                DonSang+ est développé par une équipe passionnée de professionnels de la santé, 
+                développeurs et bénévoles unis par la même vision : rendre le don de sang plus accessible. 
+                Nous travaillons en étroite collaboration avec les centres de transfusion sanguine 
+                pour vous offrir la meilleure expérience possible.
+            </p>
+            <a href="mailto:contact@donsang.fr" class="contact-cta">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+                Nous contacter
+            </a>
+        </section>
+
+        <!-- Join Section -->
+        <section class="join-section">
+            <h2>Rejoignez le mouvement</h2>
+            <p>
+                Prêt à faire la différence ? Inscrivez-vous dès aujourd'hui et participez 
+                aux campagnes de don de sang près de chez vous. Chaque don peut sauver jusqu'à 3 vies.
+            </p>
+            <div class="join-buttons">
+                <a href="/signup" class="btn-primary-large">Devenir donneur</a>
+                <a href="/api/campaigns" class="btn-secondary-large">Voir les campagnes</a>
+            </div>
+        </section>
+    </div>
+</div>

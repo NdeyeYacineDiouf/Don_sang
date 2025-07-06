@@ -86,6 +86,9 @@ app.use(async (req, res, next) => {
 app.get("/", (req, res) => {
   res.render("home", { pageTitle: "Accueil - Don de Sang" });
 });
+app.get("/about", (req, res) => {
+  res.render("about", { pageTitle: "À propos - DonSang+" });
+});
 
 // Routes API
 app.use('/api/appointments', appointmentRoutes);
