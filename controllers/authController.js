@@ -57,7 +57,7 @@ exports.login = async (req, res) => {
 // Déconnexion
 exports.logout = (req, res) => {
   req.session.destroy(() => {
-    res.redirect("/login");
+    res.redirect("/");  // ← Changer "/login" en "/"
   });
 };
 
