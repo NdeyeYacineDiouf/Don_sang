@@ -1,81 +1,444 @@
+<style>
+  /* CSS spécifique pour la page de détail campagne */
+  
+  .detail-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: #fdf2f8;
+      min-height: 70vh;
+  }
 
-<h1><%= campaign.title %></h1>
-<p><strong>Description :</strong> <%= campaign.description %></p>
-<p><strong>Lieu :</strong> <%= campaign.location %></p>
-<p><strong>Date :</strong> du <%= campaign.startDate.toLocaleDateString() %> au <%= campaign.endDate.toLocaleDateString() %></p>
-<p><strong>Horaire :</strong> <%= campaign.startTime %> - <%= campaign.endTime %></p>
+  .breadcrumb {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+      color: #718096;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+  }
 
-<h3>Créneaux disponibles :</h3>
+  .breadcrumb:hover {
+      color: #dc3545;
+      text-decoration: none;
+  }
 
-<% if (slots && slots.length > 0) { %>
-  <div class="slots-container">
-    <% 
-    // Organiser les créneaux par jour
-    const slotsByDay = {};
-    slots.forEach(slot => {
-      const dayStr = slot.day.toLocaleDateString();
-      if (!slotsByDay[dayStr]) {
-        slotsByDay[dayStr] = [];
+  .breadcrumb::before {
+      content: "←";
+      margin-right: 0.5rem;
+      font-weight: bold;
+  }
+
+  .campaign-header {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+  }
+
+  .campaign-title {
+      color: #2d3748;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+  }
+
+  .campaign-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+  }
+
+  .campaign-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+  }
+
+  .info-item {
+      display: flex;
+      align-items: center;
+      color: #4a5568;
+      font-size: 1rem;
+  }
+
+  .info-label {
+      font-weight: 600;
+      margin-right: 0.5rem;
+      color: #2d3748;
+  }
+
+  .slots-section {
+      background: white;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2rem;
+  }
+
+  .slots-title {
+      color: #2d3748;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+  }
+
+  .day-section {
+      margin-bottom: 2rem;
+  }
+
+  .day-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid #f1f5f9;
+  }
+
+  .day-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+      color: #dc3545;
+      margin-right: 0.75rem;
+  }
+
+  .day-title {
+      color: #2d3748;
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+  }
+
+  .slots-grid {
+      display: grid;
+      gap: 1rem;
+  }
+
+  .slot-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      transition: all 0.3s ease;
+  }
+
+  .slot-item:hover {
+      border-color: #cbd5e0;
+      background: #f1f5f9;
+  }
+
+  .slot-info {
+      display: flex;
+      align-items: center;
+      flex: 1;
+  }
+
+  .time-icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      color: #dc3545;
+      margin-right: 1rem;
+  }
+
+  .slot-time {
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 1rem;
+      margin-right: 2rem;
+  }
+
+  .slot-availability {
+      color: #718096;
+      font-style: italic;
+      font-size: 0.9rem;
+  }
+
+  .slot-availability.full {
+      color: #e53e3e;
+  }
+
+  .slot-button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 100px;
+  }
+
+  .btn-reserve {
+      background: #dc3545;
+      color: white;
+  }
+
+  .btn-reserve:hover {
+      background: #c82333;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+      color: white;
+      text-decoration: none;
+  }
+
+  .btn-full {
+      background: #e2e8f0;
+      color: #64748b;
+      cursor: not-allowed;
+  }
+
+  .btn-full:hover {
+      transform: none;
+      box-shadow: none;
+  }
+
+  .back-section {
+      text-align: center;
+      margin-top: 3rem;
+  }
+
+  .back-button {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.75rem 2rem;
+      background: white;
+      color: #2d3748;
+      border: 2px solid #e2e8f0;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .back-button:hover {
+      background: #f7fafc;
+      border-color: #cbd5e0;
+      color: #2d3748;
+      text-decoration: none;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  }
+
+  .back-button::before {
+      content: "←";
+      margin-right: 0.5rem;
+      font-weight: bold;
+  }
+
+  .empty-slots {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: #718096;
+  }
+
+  .empty-slots-icon {
+      width: 3rem;
+      height: 3rem;
+      margin: 0 auto 1rem;
+      color: #cbd5e0;
+  }
+
+  /* Animation d'apparition */
+  .campaign-header {
+      animation: fadeInUp 0.6s ease-out;
+  }
+
+  .slots-section {
+      animation: fadeInUp 0.6s ease-out 0.1s;
+      animation-fill-mode: both;
+  }
+
+  .slot-item {
+      animation: fadeInUp 0.4s ease-out;
+  }
+
+  .slot-item:nth-child(2) { animation-delay: 0.1s; }
+  .slot-item:nth-child(3) { animation-delay: 0.2s; }
+  .slot-item:nth-child(4) { animation-delay: 0.3s; }
+  .slot-item:nth-child(5) { animation-delay: 0.4s; }
+  .slot-item:nth-child(6) { animation-delay: 0.5s; }
+  .slot-item:nth-child(7) { animation-delay: 0.6s; }
+
+  @keyframes fadeInUp {
+      from {
+          opacity: 0;
+          transform: translateY(30px);
       }
-      slotsByDay[dayStr].push(slot);
-    });
-    
-    // Afficher les créneaux organisés par jour
-    Object.keys(slotsByDay).forEach(day => { 
-    %>
-      <div class="day-slots">
-        <h4>📅 <%= day %></h4>
-        <ul class="slots-list">
-          <% slotsByDay[day].forEach(slot => { %>
-            <li class="slot-item">
-              🕑 <%= slot.startTime %> - <%= slot.endTime %>
-              <span class="places-info">
-                Places restantes: <%= slot.maxPeople - slot.reserved %>/<%= slot.maxPeople %>
-              </span>
-              <% if ((slot.maxPeople - slot.reserved) > 0) { %>
-                <form action="/api/appointments/slots/<%= slot._id %>/reserve" method="POST" style="display: inline;">
-                  <button type="submit" class="reserve-btn">Réserver</button>
-                </form>
-                
-              <% } else { %>
-                <span class="full-label">Complet</span>
-              <% } %>
-            </li>
+      to {
+          opacity: 1;
+          transform: translateY(0);
+      }
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+      .detail-container {
+          padding: 1rem;
+      }
+
+      .campaign-header,
+      .slots-section {
+          padding: 1.5rem;
+      }
+
+      .campaign-title {
+          font-size: 2rem;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+      }
+
+      .campaign-info {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+      }
+
+      .slot-item {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 1rem;
+      }
+
+      .slot-info {
+          width: 100%;
+      }
+
+      .slot-button {
+          width: 100%;
+      }
+  }
+
+  @media (max-width: 480px) {
+      .campaign-title {
+          font-size: 1.75rem;
+      }
+      
+      .slots-title {
+          font-size: 1.25rem;
+      }
+  }
+</style>
+
+<div class="detail-container">
+  <a href="/api/campaigns" class="breadcrumb">Retour à la liste</a>
+  
+  <div class="campaign-header">
+      <h1 class="campaign-title">
+          <%= campaign.title %>
+          <% if (campaign.urgent) { %>
+              <span class="campaign-badge">Urgent</span>
+          <% } %>
+      </h1>
+      
+      <div class="campaign-info">
+          <div class="info-item">
+              <span class="info-label">Description :</span>
+              <%= campaign.description %>
+          </div>
+          <div class="info-item">
+              <span class="info-label">Lieu :</span>
+              <%= campaign.location %>
+          </div>
+          <div class="info-item">
+              <span class="info-label">Date :</span>
+              du <%= campaign.startDate.toLocaleDateString('fr-FR') %> au <%= campaign.endDate.toLocaleDateString('fr-FR') %>
+          </div>
+          <div class="info-item">
+              <span class="info-label">Horaire :</span>
+              <%= campaign.startTime %> - <%= campaign.endTime %>
+          </div>
+      </div>
+  </div>
+
+  <div class="slots-section">
+      <h2 class="slots-title">Créneaux disponibles :</h2>
+
+      <% if (slots && slots.length > 0) { %>
+          <% 
+          // Organiser les créneaux par jour
+          const slotsByDay = {};
+          slots.forEach(slot => {
+              const dayStr = slot.day.toLocaleDateString('fr-FR');
+              if (!slotsByDay[dayStr]) {
+                  slotsByDay[dayStr] = [];
+              }
+              slotsByDay[dayStr].push(slot);
+          });
+          %>
+
+          <% Object.keys(slotsByDay).forEach(day => { %>
+              <div class="day-section">
+                  <div class="day-header">
+                      <svg class="day-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                      </svg>
+                      <h3 class="day-title"><%= day %></h3>
+                  </div>
+                  
+                  <div class="slots-grid">
+                      <% slotsByDay[day].forEach(slot => { 
+                          const available = slot.maxPeople - slot.reserved;
+                          const isFull = available <= 0;
+                      %>
+                          <div class="slot-item">
+                              <div class="slot-info">
+                                  <svg class="time-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                  </svg>
+                                  <span class="slot-time"><%= slot.startTime %> - <%= slot.endTime %></span>
+                                  <span class="slot-availability <%= isFull ? 'full' : '' %>">
+                                      Places restantes: <%= available %>/<%= slot.maxPeople %>
+                                  </span>
+                              </div>
+                              
+                              <% if (!isFull) { %>
+                                  <form action="/api/appointments/slots/<%= slot._id %>/reserve" method="POST" style="display: inline;">
+                                      <button type="submit" class="slot-button btn-reserve">
+                                          Réserver
+                                      </button>
+                                  </form>
+                              <% } else { %>
+                                  <span class="slot-button btn-full">Complet</span>
+                              <% } %>
+                          </div>
+                      <% }) %>
+                  </div>
+              </div>
           <% }) %>
-        </ul>
-      </div>
-    <% }) %>
+      <% } else { %>
+          <div class="empty-slots">
+              <svg class="empty-slots-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              <h3>Aucun créneau disponible</h3>
+              <p>Il n'y a actuellement aucun créneau disponible pour cette campagne.</p>
+          </div>
+      <% } %>
   </div>
-<% } else { %>
-  <p>Aucun créneau disponible pour cette campagne.</p>
-<% } %>
 
-<% if (isAdmin) { %>
-  <div class="admin-section">
-    <h3>Ajouter un créneau</h3>
-    <form action="/campaigns/<%= campaign._id %>/slots" method="POST">
-      <div class="form-group">
-        <label for="day">Date:</label>
-        <input type="date" id="day" name="day" required>
-      </div>
-      <div class="form-group">
-        <label for="startTime">Heure de début:</label>
-        <input type="time" id="startTime" name="startTime" required>
-      </div>
-      <div class="form-group">
-        <label for="endTime">Heure de fin:</label>
-        <input type="time" id="endTime" name="endTime" required>
-      </div>
-      <div class="form-group">
-        <label for="maxPeople">Nombre de places:</label>
-        <input type="number" id="maxPeople" name="maxPeople" value="<%= campaign.maxPeoplePerSlot %>" required>
-      </div>
-      <button type="submit" class="add-slot-btn">Ajouter ce créneau</button>
-    </form>
+  <div class="back-section">
+      <a href="/api/campaigns" class="back-button">
+          Retour à la liste
+      </a>
   </div>
-<% } %>
-
-<a href="/api/campaigns">
-  <button class="back-btn">Retour à la liste</button>
-</a>
-
+</div>
