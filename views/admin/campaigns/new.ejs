@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Créer une Campagne - DonSang+ Admin</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmzfx8_O84TGrH7fYd8lJiGiYfvxYzi40&libraries=places"></script>
     <style>
         /* CSS inspiré du dashboard et login existants */
         
@@ -494,7 +495,11 @@
                 </div>
             </div>
             <div class="header-logo">
-                <div class="logo-icon">🩸</div>
+                <div class="logo-icon">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                    </svg>
+                </div>
                 DonSang+
             </div>
         </div>
@@ -543,6 +548,10 @@
                             <label class="form-label" for="location">Lieu de la collecte *</label>
                             <input type="text" id="location" name="location" class="form-input" 
                                    placeholder="Ex: Centre communal, 123 Rue de la Paix, Paris" required>
+                            <input type="hidden" id="locationAddress" name="locationAddress">
+                            <input type="hidden" id="locationLat" name="locationLat">
+                            <input type="hidden" id="locationLng" name="locationLng">
+                            <input type="hidden" id="locationPlaceId" name="locationPlaceId">
                         </div>
                         
                         <div class="form-group">
@@ -805,8 +814,42 @@
             group.style.display = this.checked ? 'block' : 'none';
         });
 
+        // Initialisation Google Places Autocomplete
+        function initAutocomplete() {
+            const locationInput = document.getElementById('location');
+            const autocomplete = new google.maps.places.Autocomplete(locationInput, {
+                types: ['establishment', 'geocode'],
+                componentRestrictions: { country: 'sn' }
+            });
+
+            autocomplete.addListener('place_changed', function() {
+                const place = autocomplete.getPlace();
+                
+                if (!place.geometry) {
+                    console.log("Aucun détail disponible pour: '" + place.name + "'");
+                    return;
+                }
+
+                // Remplir les champs cachés avec les données de localisation
+                document.getElementById('locationAddress').value = place.formatted_address || '';
+                document.getElementById('locationLat').value = place.geometry.location.lat();
+                document.getElementById('locationLng').value = place.geometry.location.lng();
+                document.getElementById('locationPlaceId').value = place.place_id || '';
+                
+                // Mettre à jour le champ visible avec l'adresse formatée
+                locationInput.value = place.formatted_address || place.name || '';
+            });
+        }
+
         // Initialisation
         updateStepDisplay();
+        
+        // Initialiser Google Places quand la page est chargée
+        if (typeof google !== 'undefined') {
+            initAutocomplete();
+        } else {
+            window.addEventListener('load', initAutocomplete);
+        }
 
         // Validation des dates
         document.getElementById('startDate').addEventListener('change', function() {

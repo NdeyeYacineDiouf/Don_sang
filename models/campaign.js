@@ -8,6 +8,14 @@ const campaignSchema = new mongoose.Schema({
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
   location: { type: String, required: true },
+  locationDetails: {
+    address: String,
+    coordinates: {
+      lat: Number,
+      lng: Number
+    },
+    place_id: String
+  },
   maxPeoplePerSlot: { type: Number, required: true }, // Nombre max de personnes par créneau
 
   // Ajouter un champ pour relier les créneaux (slots) à la campagne

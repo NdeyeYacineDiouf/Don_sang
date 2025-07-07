@@ -1,0 +1,463 @@
+<style>
+    .faq-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+    }
+
+    .faq-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .faq-title {
+        color: #2d3748;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .faq-subtitle {
+        color: #718096;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .faq-categories {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .faq-category {
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .category-header {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 1.5rem 2rem;
+        font-size: 1.25rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .faq-items {
+        padding: 0;
+    }
+
+    .faq-item {
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .faq-item:last-child {
+        border-bottom: none;
+    }
+
+    .faq-question {
+        width: 100%;
+        padding: 1.5rem 2rem;
+        background: none;
+        border: none;
+        text-align: left;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #2d3748;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+        background: #f8fafc;
+    }
+
+    .faq-question.active {
+        background: #fef5e7;
+        color: #dc3545;
+    }
+
+    .faq-toggle {
+        width: 1.5rem;
+        height: 1.5rem;
+        transition: transform 0.3s ease;
+    }
+
+    .faq-question.active .faq-toggle {
+        transform: rotate(180deg);
+    }
+
+    .faq-answer {
+        padding: 0 2rem 1.5rem 2rem;
+        color: #4a5568;
+        line-height: 1.7;
+        display: none;
+    }
+
+    .faq-answer.show {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .important-note {
+        background: #fef5e7;
+        border: 1px solid #f6d55c;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .important-note .icon {
+        color: #d69e2e;
+        flex-shrink: 0;
+        margin-top: 0.25rem;
+    }
+
+    .contact-cta {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .contact-cta h3 {
+        margin-bottom: 1rem;
+    }
+
+    .contact-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        color: #dc3545;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .contact-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        color: #dc3545;
+    }
+
+    @media (max-width: 768px) {
+        .faq-container {
+            padding: 0 1rem;
+        }
+        
+        .faq-title {
+            font-size: 2rem;
+        }
+        
+        .category-header {
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .faq-question {
+            padding: 1rem 1.5rem;
+        }
+        
+        .faq-answer {
+            padding: 0 1.5rem 1rem 1.5rem;
+        }
+    }
+</style>
+
+<div class="faq-container">
+    <div class="faq-header">
+        <h1 class="faq-title">Questions Fréquentes</h1>
+        <p class="faq-subtitle">
+            Trouvez rapidement les réponses aux questions les plus courantes sur le don de sang et notre plateforme.
+        </p>
+    </div>
+
+    <div class="faq-categories">
+        <!-- Don de Sang - Général -->
+        <div class="faq-category">
+            <div class="category-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                Don de Sang - Informations Générales
+            </div>
+            <div class="faq-items">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Qui peut donner son sang ?
+                        <svg class="faq-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Pour donner son sang au Sénégal, vous devez :</p>
+                        <ul>
+                            <li>Être âgé(e) de 18 à 65 ans (jusqu'à 70 ans pour les donneurs réguliers)</li>
+                            <li>Peser au minimum 50 kg</li>
+                            <li>Être en bonne santé</li>
+                            <li>Ne pas avoir de contre-indications médicales</li>
+                        </ul>
+                        <div class="important-note">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <div>
+                                <strong>Important :</strong> Un entretien médical préalable est toujours effectué pour s'assurer de votre aptitude au don.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Combien de temps entre deux dons ?
+                        <svg class="faq-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>L'intervalle minimum entre deux dons de sang total est de <strong>8 semaines (2 mois)</strong> pour les hommes et les femmes.</p>
+                        <p>Cette période permet à votre organisme de :</p>
+                        <ul>
+                            <li>Reconstituer ses réserves de fer</li>
+                            <li>Régénérer les globules rouges</li>
+                            <li>Maintenir votre santé et bien-être</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Que se passe-t-il pendant un don ?
+                        <svg class="faq-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Le processus de don se déroule en plusieurs étapes :</p>
+                        <ol>
+                            <li><strong>Accueil et inscription</strong> (5 min)</li>
+                            <li><strong>Questionnaire médical</strong> (10 min)</li>
+                            <li><strong>Entretien avec le médecin</strong> (5 min)</li>
+                            <li><strong>Le don lui-même</strong> (8-10 min)</li>
+                            <li><strong>Repos et collation</strong> (15 min)</li>
+                        </ol>
+                        <p>Au total, comptez environ 45 minutes pour l'ensemble du processus.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Utilisation de la Plateforme -->
+        <div class="faq-category">
+            <div class="category-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                Utilisation de la Plateforme
+            </div>
+            <div class="faq-items">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Comment créer un compte ?
+                        <svg class="faq-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Pour créer votre compte de donneur :</p>
+                        <ol>
+                            <li>Cliquez sur "S'inscrire" en haut de la page</li>
+                            <li>Remplissez le formulaire avec vos informations personnelles</li>
+                            <li>Vérifiez votre adresse email</li>
+                            <li>Votre compte est activé et prêt à utiliser</li>
+                        </ol>
+                        <p>Vous pourrez ensuite réserver des créneaux et suivre vos dons.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Comment réserver un créneau ?
+                        <svg class="faq-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Pour réserver un créneau de don :</p>
+                        <ol>
+                            <li>Connectez-vous à votre compte</li>
+                            <li>Consultez les "Campagnes" disponibles</li>
+                            <li>Choisissez la campagne qui vous convient</li>
+                            <li>Sélectionnez un créneau horaire disponible</li>
+                            <li>Confirmez votre réservation</li>
+                        </ol>
+                        <p>Vous recevrez une confirmation et pourrez retrouver votre rendez-vous dans "Mes Rendez-vous".</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Puis-je modifier ou annuler mon rendez-vous ?
+                        <svg class="faq-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Oui, vous pouvez modifier ou annuler votre rendez-vous :</p>
+                        <ul>
+                            <li>Allez dans la section "Mes Rendez-vous"</li>
+                            <li>Cliquez sur "Modifier" pour changer de créneau</li>
+                            <li>Cliquez sur "Annuler" pour supprimer le rendez-vous</li>
+                        </ul>
+                        <div class="important-note">
+                            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                            <div>
+                                Merci de prévenir au moins 24h à l'avance pour permettre à d'autres donneurs de prendre votre place.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Problèmes Techniques -->
+        <div class="faq-category">
+            <div class="category-header">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+                Problèmes Techniques
+            </div>
+            <div class="faq-items">
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Les cartes Google Maps ne s'affichent pas
+                        <svg class="faq-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Si les cartes ne s'affichent pas correctement :</p>
+                        <ul>
+                            <li>Vérifiez votre connexion internet</li>
+                            <li>Autorisez la géolocalisation si demandée</li>
+                            <li>Actualisez la page (F5 ou Ctrl+R)</li>
+                            <li>Essayez avec un autre navigateur</li>
+                            <li>Désactivez temporairement votre bloqueur de publicités</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Je n'arrive pas à me connecter
+                        <svg class="faq-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>En cas de problème de connexion :</p>
+                        <ol>
+                            <li>Vérifiez votre email et mot de passe</li>
+                            <li>Assurez-vous que les majuscules/minuscules sont correctes</li>
+                            <li>Essayez de réinitialiser votre mot de passe</li>
+                            <li>Videz le cache de votre navigateur</li>
+                            <li>Contactez notre support si le problème persiste</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" onclick="toggleFaq(this)">
+                        Le site est lent ou ne répond pas
+                        <svg class="faq-toggle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6,9 12,15 18,9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Pour améliorer les performances :</p>
+                        <ul>
+                            <li>Vérifiez votre connexion internet</li>
+                            <li>Fermez les autres onglets non nécessaires</li>
+                            <li>Actualisez la page</li>
+                            <li>Essayez en navigation privée</li>
+                            <li>Redémarrez votre navigateur</li>
+                        </ul>
+                        <p>Si le problème persiste, il peut s'agir d'une maintenance temporaire de notre côté.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="contact-cta">
+        <h3>Vous ne trouvez pas la réponse à votre question ?</h3>
+        <p>Notre équipe est là pour vous aider</p>
+        <a href="/contact" class="contact-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            Nous contacter
+        </a>
+    </div>
+</div>
+
+<script>
+function toggleFaq(button) {
+    const answer = button.nextElementSibling;
+    const isOpen = button.classList.contains('active');
+    
+    // Fermer toutes les autres FAQ
+    document.querySelectorAll('.faq-question.active').forEach(q => {
+        q.classList.remove('active');
+        q.nextElementSibling.classList.remove('show');
+    });
+    
+    // Ouvrir ou fermer la FAQ cliquée
+    if (!isOpen) {
+        button.classList.add('active');
+        answer.classList.add('show');
+    }
+}
+</script>

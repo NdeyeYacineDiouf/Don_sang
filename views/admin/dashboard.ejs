@@ -425,19 +425,19 @@
   
   <div class="stats-grid">
       <div class="stat-item">
-          <span class="stat-number">12</span>
+          <span class="stat-number"><%= stats ? stats.activeCampaigns : 0 %></span>
           <span class="stat-label">Campagnes actives</span>
       </div>
       <div class="stat-item">
-          <span class="stat-number">847</span>
+          <span class="stat-number"><%= stats ? stats.appointmentsThisMonth : 0 %></span>
           <span class="stat-label">Rendez-vous ce mois</span>
       </div>
       <div class="stat-item">
-          <span class="stat-number">1,234</span>
+          <span class="stat-number"><%= stats ? stats.totalUsers.toLocaleString('fr-FR') : 0 %></span>
           <span class="stat-label">Donneurs inscrits</span>
       </div>
       <div class="stat-item">
-          <span class="stat-number">95%</span>
+          <span class="stat-number"><%= stats ? stats.attendanceRate : 95 %>%</span>
           <span class="stat-label">Taux de présence</span>
       </div>
   </div>

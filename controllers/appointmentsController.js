@@ -1,5 +1,5 @@
 const Slot = require('../models/slot');
-const Appointment = require('../models/appointment');
+const Appointment = require('../models/Appointment');
 
 // Lister les rendez-vous d'un utilisateur
 exports.listAppointments = async (req, res) => {
@@ -30,8 +30,27 @@ exports.listAppointments = async (req, res) => {
             });
         }
         
+        // Grouper les rendez-vous par campagne
+        const groupedAppointments = {};
+        validAppointments.forEach(app => {
+            const campaignId = app.campaign_id._id.toString();
+            if (!groupedAppointments[campaignId]) {
+                groupedAppointments[campaignId] = {
+                    campaign: app.campaign_id,
+                    appointments: []
+                };
+            }
+            groupedAppointments[campaignId].appointments.push(app);
+        });
+        
+        // Convertir en tableau et trier par date
+        const groupedAppointmentsList = Object.values(groupedAppointments);
+        groupedAppointmentsList.forEach(group => {
+            group.appointments.sort((a, b) => new Date(a.date_time) - new Date(b.date_time));
+        });
+        
         res.render("appointment/index", { 
-            appointments: validAppointments, // Afficher seulement les valides
+            groupedAppointments: groupedAppointmentsList,
             pageTitle: "Mes Rendez-vous" 
         });
     } catch (err) {
@@ -52,6 +71,22 @@ exports.reserveSlot = async (req, res) => {
 
         if (!slot.campaign) {
             return res.status(400).send("Ce créneau n'est pas associé à une campagne");
+        }
+
+        // Vérifier l'écart minimum de 2 mois entre les dons
+        const lastAppointment = await Appointment.findOne({ 
+            user_id: userId 
+        }).sort({ date_time: -1 });
+        
+        if (lastAppointment) {
+            const newAppointmentDate = new Date(slot.day.toDateString() + " " + slot.startTime);
+            const lastAppointmentDate = new Date(lastAppointment.date_time);
+            const diffInMs = newAppointmentDate.getTime() - lastAppointmentDate.getTime();
+            const diffInMonths = diffInMs / (1000 * 60 * 60 * 24 * 30.44); // Approximation de 30.44 jours par mois
+            
+            if (diffInMonths < 2) {
+                return res.status(400).send("Vous devez attendre au moins 2 mois entre deux dons de sang. Votre dernier don date du " + lastAppointmentDate.toLocaleDateString('fr-FR'));
+            }
         }
 
         // Créer le rendez-vous

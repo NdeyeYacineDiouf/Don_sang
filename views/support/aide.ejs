@@ -1,0 +1,238 @@
+<style>
+    .help-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+    }
+
+    .help-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .help-title {
+        color: #2d3748;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .help-subtitle {
+        color: #718096;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .help-sections {
+        display: grid;
+        gap: 2rem;
+    }
+
+    .help-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+        color: #dc3545;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .help-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .help-item {
+        margin-bottom: 1rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 0.5rem;
+        border-left: 4px solid #dc3545;
+    }
+
+    .help-question {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .help-answer {
+        color: #4a5568;
+        line-height: 1.6;
+    }
+
+    .contact-box {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .contact-box h3 {
+        margin-bottom: 1rem;
+    }
+
+    .contact-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        color: #dc3545;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .contact-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        color: #dc3545;
+    }
+
+    @media (max-width: 768px) {
+        .help-container {
+            padding: 0 1rem;
+        }
+        
+        .help-title {
+            font-size: 2rem;
+        }
+    }
+</style>
+
+<div class="help-container">
+    <div class="help-header">
+        <h1 class="help-title">Centre d'Aide</h1>
+        <p class="help-subtitle">
+            Trouvez toutes les réponses à vos questions sur le don de sang et l'utilisation de notre plateforme.
+        </p>
+    </div>
+
+    <div class="help-sections">
+        <div class="help-section">
+            <h2 class="section-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                Questions Fréquentes
+            </h2>
+            <ul class="help-list">
+                <li class="help-item">
+                    <div class="help-question">Comment créer un compte donneur ?</div>
+                    <div class="help-answer">
+                        Cliquez sur "S'inscrire" en haut de la page, remplissez le formulaire avec vos informations personnelles, et validez votre compte via l'email de confirmation.
+                    </div>
+                </li>
+                <li class="help-item">
+                    <div class="help-question">Comment réserver un créneau de don ?</div>
+                    <div class="help-answer">
+                        Consultez les campagnes disponibles, sélectionnez celle qui vous convient, choisissez un créneau horaire et confirmez votre réservation.
+                    </div>
+                </li>
+                <li class="help-item">
+                    <div class="help-question">Puis-je annuler mon rendez-vous ?</div>
+                    <div class="help-answer">
+                        Oui, vous pouvez annuler votre rendez-vous depuis votre espace "Mes Rendez-vous". Nous vous demandons de le faire au moins 24h à l'avance.
+                    </div>
+                </li>
+                <li class="help-item">
+                    <div class="help-question">Pourquoi dois-je attendre 2 mois entre les dons ?</div>
+                    <div class="help-answer">
+                        C'est une règle médicale de sécurité pour permettre à votre organisme de reconstituer ses réserves de fer et d'assurer votre bien-être.
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <h2 class="section-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                </svg>
+                Don de Sang - Informations Médicales
+            </h2>
+            <ul class="help-list">
+                <li class="help-item">
+                    <div class="help-question">Qui peut donner son sang ?</div>
+                    <div class="help-answer">
+                        Toute personne âgée de 18 à 70 ans, pesant plus de 50 kg, en bonne santé et répondant aux critères médicaux peut donner son sang.
+                    </div>
+                </li>
+                <li class="help-item">
+                    <div class="help-question">Combien de temps dure un don ?</div>
+                    <div class="help-answer">
+                        Le don lui-même dure environ 8-10 minutes. Avec l'accueil, l'entretien médical et la collation, comptez environ 45 minutes au total.
+                    </div>
+                </li>
+                <li class="help-item">
+                    <div class="help-question">Que dois-je apporter le jour du don ?</div>
+                    <div class="help-answer">
+                        Une pièce d'identité avec photo et votre carte de donneur si vous en avez une. Pensez aussi à bien manger et vous hydrater avant le don.
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="help-section">
+            <h2 class="section-title">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                Utilisation de la Plateforme
+            </h2>
+            <ul class="help-list">
+                <li class="help-item">
+                    <div class="help-question">Comment modifier mes informations personnelles ?</div>
+                    <div class="help-answer">
+                        Connectez-vous à votre compte et accédez à la section "Mon Profil" pour mettre à jour vos informations.
+                    </div>
+                </li>
+                <li class="help-item">
+                    <div class="help-question">Comment voir l'historique de mes dons ?</div>
+                    <div class="help-answer">
+                        Dans votre espace "Mes Rendez-vous", vous pouvez consulter tous vos dons passés et à venir.
+                    </div>
+                </li>
+                <li class="help-item">
+                    <div class="help-question">Les cartes Google Maps ne s'affichent pas ?</div>
+                    <div class="help-answer">
+                        Vérifiez votre connexion internet et autorisez la géolocalisation si demandée. Actualisez la page si nécessaire.
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="contact-box">
+        <h3>Vous ne trouvez pas la réponse à votre question ?</h3>
+        <p>Notre équipe est là pour vous aider</p>
+        <a href="/contact" class="contact-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            Nous contacter
+        </a>
+    </div>
+</div>

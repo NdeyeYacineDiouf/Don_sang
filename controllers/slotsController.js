@@ -1,6 +1,6 @@
 // slotsController.js
 const Slot = require('../models/slot');
-const Appointment = require('../models/appointment');
+const Appointment = require('../models/Appointment');
 
 exports.reserveSlot = async (req, res) => {
     try {

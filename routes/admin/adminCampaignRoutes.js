@@ -19,7 +19,8 @@ router.post("/campaigns", isAdmin, async (req, res) => {
     const { 
       title, description, startDate, endDate, 
       startTime, endTime, location, maxPeoplePerSlot,
-      generateSlots, slotDuration
+      generateSlots, slotDuration,
+      locationAddress, locationLat, locationLng, locationPlaceId
     } = req.body;
     
     const newCampaign = new Campaign({
@@ -30,6 +31,14 @@ router.post("/campaigns", isAdmin, async (req, res) => {
       startTime,
       endTime,
       location,
+      locationDetails: {
+        address: locationAddress,
+        coordinates: {
+          lat: locationLat ? parseFloat(locationLat) : null,
+          lng: locationLng ? parseFloat(locationLng) : null
+        },
+        place_id: locationPlaceId
+      },
       maxPeoplePerSlot: parseInt(maxPeoplePerSlot),
       slots: [] // Initialiser avec un tableau vide
     });
@@ -75,9 +84,21 @@ router.get("/campaigns/:id/edit", isAdmin, async (req, res) => {
 // ➡️ Soumettre les modifications d'une campagne
 router.post("/campaigns/:id", isAdmin, async (req, res) => {
   try {
-    const { title, description, startDate, endDate, startTime, endTime, location, maxPeoplePerSlot } = req.body;
+    const { 
+      title, description, startDate, endDate, startTime, endTime, location, maxPeoplePerSlot,
+      locationAddress, locationLat, locationLng, locationPlaceId
+    } = req.body;
     
-    await Campaign.findByIdAndUpdate(req.params.id, {
+    // Debug temporaire
+    console.log('🔍 Données de localisation reçues (admin route):', {
+      location,
+      locationAddress,
+      locationLat,
+      locationLng,
+      locationPlaceId
+    });
+
+    const updateData = {
       title,
       description,
       startDate,
@@ -86,6 +107,27 @@ router.post("/campaigns/:id", isAdmin, async (req, res) => {
       endTime,
       location,
       maxPeoplePerSlot: parseInt(maxPeoplePerSlot)
+    };
+
+    // Ajouter les détails de localisation si fournis
+    if (locationAddress || locationLat || locationLng || locationPlaceId) {
+      updateData.locationDetails = {
+        address: locationAddress,
+        coordinates: {
+          lat: locationLat ? parseFloat(locationLat) : null,
+          lng: locationLng ? parseFloat(locationLng) : null
+        },
+        place_id: locationPlaceId
+      };
+    }
+    
+    const campaign = await Campaign.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    
+    // Debug temporaire - vérifier la campagne sauvegardée
+    console.log('✅ Campagne mise à jour (admin route):', {
+      title: campaign.title,
+      location: campaign.location,
+      locationDetails: campaign.locationDetails
     });
 
     req.session.notification = "✅ Campagne mise à jour avec succès";

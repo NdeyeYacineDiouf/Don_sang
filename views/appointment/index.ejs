@@ -65,9 +65,31 @@
       flex-wrap: wrap;
   }
 
+  .appointment-actions-inline {
+      display: inline-flex;
+      gap: 0.5rem;
+      margin-left: 1rem;
+      align-items: center;
+  }
+
+  .campaign-appointments {
+      margin-left: 1rem;
+  }
+
+  .btn-small {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+  }
+
+  .btn-small svg {
+      width: 12px;
+      height: 12px;
+  }
+
   .btn {
       display: inline-flex;
       align-items: center;
+      gap: 0.5rem;
       padding: 0.5rem 1rem;
       border-radius: 0.375rem;
       text-decoration: none;
@@ -76,6 +98,7 @@
       cursor: pointer;
       transition: all 0.3s ease;
       border: none;
+      white-space: nowrap;
   }
 
   .btn-edit {
@@ -157,6 +180,79 @@
       font-style: italic;
   }
 
+  .appointment-location {
+      color: #718096;
+      margin-top: 0.5rem;
+  }
+
+  .appointment-map {
+      margin-top: 1rem;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .mini-map {
+      width: 100%;
+      height: 300px;
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      position: relative;
+  }
+
+  .mini-map::before {
+      content: "🗺️ Chargement de la carte...";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: #6c757d;
+      font-size: 0.9rem;
+  }
+
+  .map-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+  }
+
+  .map-modal-content {
+      position: relative;
+      background-color: white;
+      margin: 5% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80%;
+  }
+
+  .map-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #aaa;
+  }
+
+  .map-close:hover {
+      color: #000;
+  }
+
+  #modalMap {
+      width: 100%;
+      height: 400px;
+      border-radius: 8px;
+      margin-top: 10px;
+  }
+
   @media (max-width: 768px) {
       .appointment-item {
           flex-direction: column;
@@ -172,6 +268,10 @@
       .container {
           padding: 0 1rem;
       }
+
+      .mini-map {
+          height: 250px;
+      }
   }
 </style>
 
@@ -180,42 +280,97 @@
       <h1>Mes Rendez-vous</h1>
   </div>
 
-  <% if (appointments && appointments.length > 0) { %>
+  <% if (groupedAppointments && groupedAppointments.length > 0) { %>
       <ul class="appointment-list">
-          <% appointments.forEach(app => { %>
-              <li class="appointment-item <%= !app.campaign_id ? 'invalid-appointment' : '' %>">
+          <% groupedAppointments.forEach(group => { %>
+              <li class="appointment-item campaign-group">
                   <div class="appointment-info">
-                      <div class="appointment-title <%= !app.campaign_id ? 'invalid-text' : '' %>">
-                          🗓️ 
-                          <% if (app.campaign_id && app.campaign_id.title) { %>
-                              <%= app.campaign_id.title %>
-                          <% } else { %>
-                              Campagne supprimée
-                          <% } %>
+                      <div class="appointment-title">
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem; flex-shrink: 0;">
+                              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                              <line x1="16" y1="2" x2="16" y2="6"></line>
+                              <line x1="8" y1="2" x2="8" y2="6"></line>
+                              <line x1="3" y1="10" x2="21" y2="10"></line>
+                          </svg>
+                          <%= group.campaign.title %>
                       </div>
-                      <div class="appointment-datetime">
-                          📅 le <%= new Date(app.date_time).toLocaleDateString('fr-FR') %> à 
-                          <%= new Date(app.date_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %>
-                          <% if (!app.campaign_id) { %>
-                              <span class="invalid-text">(Campagne non disponible)</span>
-                          <% } %>
-                      </div>
-                  </div>
-
-                  <div class="appointment-actions">
-                      <% if (app.campaign_id) { %>
-                          <!-- Modifier le rendez-vous (seulement si la campagne existe) -->
-                          <a href="/api/appointments/<%= app._id %>/edit" class="btn btn-edit">
-                              ✏️ Modifier
-                          </a>
-                      <% } %>
                       
-                      <!-- Annuler le rendez-vous (toujours possible) -->
-                      <form action="/api/appointments/<%= app._id %>/cancel?_method=DELETE" method="POST" style="display:inline;">
-                          <button type="submit" class="btn btn-cancel" onclick="return confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')">
-                              ❌ Annuler
-                          </button>
-                      </form>
+                      <!-- Afficher tous les rendez-vous de cette campagne -->
+                      <div class="campaign-appointments">
+                          <% group.appointments.forEach(app => { %>
+                              <div class="appointment-datetime">
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                                      <circle cx="12" cy="12" r="10"></circle>
+                                      <polyline points="12,6 12,12 16,14"></polyline>
+                                  </svg>
+                                  le <%= new Date(app.date_time).toLocaleDateString('fr-FR') %> à 
+                                  <%= new Date(app.date_time).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) %>
+                                  
+                                  <!-- Boutons pour ce rendez-vous spécifique -->
+                                  <div class="appointment-actions-inline">
+                                      <a href="/api/appointments/<%= app._id %>/edit" class="btn btn-edit btn-small">
+                                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                          </svg>
+                                          Modifier
+                                      </a>
+                                      
+                                      <form action="/api/appointments/<%= app._id %>/cancel?_method=DELETE" method="POST" style="display:inline;">
+                                          <button type="submit" class="btn btn-cancel btn-small" onclick="return confirm('Êtes-vous sûr de vouloir annuler ce rendez-vous ?')">
+                                              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                  <circle cx="12" cy="12" r="10"></circle>
+                                                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                                                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                                              </svg>
+                                              Annuler
+                                          </button>
+                                      </form>
+                                  </div>
+                              </div>
+                          <% }) %>
+                      </div>
+                      
+                      <!-- Afficher la localisation une seule fois par campagne -->
+                      <% if (group.campaign.location) { %>
+                      <div class="appointment-location">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 0.5rem;">
+                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                              <circle cx="12" cy="10" r="3"></circle>
+                          </svg>
+                          <%= group.campaign.location %>
+                      </div>
+                      
+                      <!-- Afficher une seule carte par campagne -->
+                      <% if (group.campaign.locationDetails && group.campaign.locationDetails.coordinates && group.campaign.locationDetails.coordinates.lat && group.campaign.locationDetails.coordinates.lng) { %>
+                      <div class="appointment-map">
+                          <div class="mini-map" id="map-<%= group.campaign._id %>" 
+                               data-lat="<%= group.campaign.locationDetails.coordinates.lat %>" 
+                               data-lng="<%= group.campaign.locationDetails.coordinates.lng %>"
+                               data-title="<%= group.campaign.title %>"
+                               data-location="<%= group.campaign.location %>">
+                          </div>
+                          <div style="margin-top: 0.5rem; text-align: center;">
+                              <button onclick="openInGoogleMaps(<%= group.campaign.locationDetails.coordinates.lat %>, <%= group.campaign.locationDetails.coordinates.lng %>)" 
+                                      style="background: #4285f4; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.5rem;">
+                                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                      <circle cx="12" cy="10" r="3"></circle>
+                                  </svg>
+                                  Ouvrir dans Google Maps
+                              </button>
+                          </div>
+                      </div>
+                      <% } else { %>
+                      <div style="color: #999; font-style: italic; margin-top: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                              <circle cx="12" cy="10" r="3"></circle>
+                          </svg>
+                          Pas de coordonnées GPS pour cette campagne
+                      </div>
+                      <% } %>
+                      <% } %>
                   </div>
               </li>
           <% }) %>
@@ -240,3 +395,99 @@
       </a>
   </div>
 </div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBmzfx8_O84TGrH7fYd8lJiGiYfvxYzi40"></script>
+<script>
+let miniMaps = {};
+
+function initMiniMaps() {
+    const miniMapElements = document.querySelectorAll('.mini-map');
+    
+    miniMapElements.forEach(element => {
+        const lat = parseFloat(element.dataset.lat);
+        const lng = parseFloat(element.dataset.lng);
+        const title = element.dataset.title;
+        const location = element.dataset.location;
+        const mapId = element.id;
+        
+        if (lat && lng) {
+            const position = { lat: lat, lng: lng };
+            
+            // Créer la mini-carte
+            const map = new google.maps.Map(element, {
+                zoom: 15,
+                center: position,
+                mapTypeId: 'roadmap',
+                zoomControl: true,
+                streetViewControl: true,
+                mapTypeControl: true,
+                fullscreenControl: true,
+                gestureHandling: 'auto' // Permettre les interactions
+            });
+            
+            // Ajouter un marqueur
+            const marker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: location,
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#dc3545">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                            <circle cx="12" cy="9" r="2.5" fill="white"/>
+                        </svg>
+                    `),
+                    scaledSize: new google.maps.Size(24, 24),
+                    anchor: new google.maps.Point(12, 24)
+                }
+            });
+            
+            // InfoWindow pour plus de détails
+            const infoWindow = new google.maps.InfoWindow({
+                content: `
+                    <div style="padding: 8px;">
+                        <h4 style="margin: 0 0 5px 0; color: #dc3545; font-size: 0.9rem;">${title}</h4>
+                        <p style="margin: 0; color: #666; font-size: 0.8rem;">${location}</p>
+                    </div>
+                `
+            });
+            
+            // Ouvrir l'InfoWindow au clic sur le marqueur
+            marker.addListener('click', function() {
+                // Fermer toutes les autres InfoWindows
+                Object.values(miniMaps).forEach(mapObj => {
+                    if (mapObj.infoWindow) {
+                        mapObj.infoWindow.close();
+                    }
+                });
+                infoWindow.open(map, marker);
+            });
+            
+            // Stocker la référence de la carte
+            miniMaps[mapId] = {
+                map: map,
+                marker: marker,
+                infoWindow: infoWindow
+            };
+        }
+    });
+}
+
+// Initialiser les mini-cartes quand Google Maps est chargé
+function initializeAllMaps() {
+    if (typeof google !== 'undefined' && google.maps) {
+        setTimeout(initMiniMaps, 100);
+    } else {
+        setTimeout(initializeAllMaps, 500);
+    }
+}
+
+// Démarrer l'initialisation
+initializeAllMaps();
+
+// Fonction pour ouvrir dans Google Maps
+function openInGoogleMaps(lat, lng) {
+    const url = `https://www.google.com/maps?q=${lat},${lng}`;
+    window.open(url, '_blank');
+}
+</script>

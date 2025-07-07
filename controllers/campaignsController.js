@@ -33,7 +33,8 @@ exports.createCampaign = async (req, res) => {
         const { 
             title, description, startDate, endDate, 
             startTime, endTime, location, maxPeoplePerSlot,
-            generateSlots, slotDuration
+            generateSlots, slotDuration,
+            locationAddress, locationLat, locationLng, locationPlaceId
         } = req.body;
 
         // Créer la campagne
@@ -45,6 +46,14 @@ exports.createCampaign = async (req, res) => {
             startTime,
             endTime,
             location,
+            locationDetails: {
+                address: locationAddress,
+                coordinates: {
+                    lat: locationLat ? parseFloat(locationLat) : null,
+                    lng: locationLng ? parseFloat(locationLng) : null
+                },
+                place_id: locationPlaceId
+            },
             maxPeoplePerSlot
         });
 
@@ -69,13 +78,58 @@ exports.createCampaign = async (req, res) => {
 // Modifier une campagne
 exports.updateCampaign = async (req, res) => {
     try {
+        const {
+            title, description, startDate, endDate, 
+            startTime, endTime, location, maxPeoplePerSlot,
+            locationAddress, locationLat, locationLng, locationPlaceId
+        } = req.body;
+
+        // Debug temporaire
+        console.log('🔍 Données de localisation reçues:', {
+            location,
+            locationAddress,
+            locationLat,
+            locationLng,
+            locationPlaceId
+        });
+
+        const updateData = {
+            title,
+            description,
+            startDate,
+            endDate,
+            startTime,
+            endTime,
+            location,
+            maxPeoplePerSlot
+        };
+
+        // Ajouter les détails de localisation si fournis
+        if (locationAddress || locationLat || locationLng || locationPlaceId) {
+            updateData.locationDetails = {
+                address: locationAddress,
+                coordinates: {
+                    lat: locationLat ? parseFloat(locationLat) : null,
+                    lng: locationLng ? parseFloat(locationLng) : null
+                },
+                place_id: locationPlaceId
+            };
+        }
+
         const campaign = await Campaign.findByIdAndUpdate(
             req.params.id,
-            req.body,
+            updateData,
             { new: true }
         );
         
         if (!campaign) return res.status(404).json({ message: 'Campagne non trouvée' });
+        
+        // Debug temporaire - vérifier la campagne sauvegardée
+        console.log('✅ Campagne mise à jour:', {
+            title: campaign.title,
+            location: campaign.location,
+            locationDetails: campaign.locationDetails
+        });
         
         res.json(campaign);
     } catch (error) {

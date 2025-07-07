@@ -218,8 +218,13 @@
         </p>
         
         <div class="hero-buttons">
-            <a href="/signup" class="btn-hero btn-primary-hero">Devenir donneur</a>
-            <a href="/api/campaigns" class="btn-hero btn-secondary-hero">Voir les campagnes</a>
+            <% if (isLoggedIn) { %>
+                <a href="/api/appointments" class="btn-hero btn-primary-hero">Mes rendez-vous</a>
+                <a href="/api/campaigns" class="btn-hero btn-secondary-hero">Voir les campagnes</a>
+            <% } else { %>
+                <a href="/signup" class="btn-hero btn-primary-hero">Devenir donneur</a>
+                <a href="/api/campaigns" class="btn-hero btn-secondary-hero">Voir les campagnes</a>
+            <% } %>
         </div>
     </div>
 </section>
@@ -234,7 +239,7 @@
                     <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <div class="stat-number">15,000+</div>
+            <div class="stat-number"><%= stats ? stats.totalUsers.toLocaleString('fr-FR') : '0' %></div>
             <div class="stat-label">Donneurs actifs</div>
         </div>
         
@@ -244,8 +249,8 @@
                     <path d="M20.84 4.61C20.3292 4.099 19.7228 3.69364 19.0554 3.41708C18.3879 3.14052 17.6725 2.99817 16.95 2.99817C16.2275 2.99817 15.5121 3.14052 14.8446 3.41708C14.1772 3.69364 13.5708 4.099 13.06 4.61L12 5.67L10.94 4.61C9.9083 3.57831 8.50903 2.99871 7.05 2.99871C5.59096 2.99871 4.19169 3.57831 3.16 4.61C2.1283 5.64169 1.54871 7.04096 1.54871 8.5C1.54871 9.95903 2.1283 11.3583 3.16 12.39L12 21.23L20.84 12.39C21.351 11.8792 21.7563 11.2728 22.0329 10.6053C22.3095 9.93789 22.4518 9.22248 22.4518 8.5C22.4518 7.77752 22.3095 7.06211 22.0329 6.3947C21.7563 5.72729 21.351 5.1208 20.84 4.61Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <div class="stat-number">50,000+</div>
-            <div class="stat-label">Dons collectés</div>
+            <div class="stat-number"><%= stats ? stats.livesSaved.toLocaleString('fr-FR') : '0' %></div>
+            <div class="stat-label">Vies sauvées</div>
         </div>
         
         <div class="stat-item">
@@ -255,7 +260,7 @@
                     <path d="M9 12L11 14L15 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
-            <div class="stat-number">200+</div>
+            <div class="stat-number"><%= stats ? stats.partnerCenters : '5' %>+</div>
             <div class="stat-label">Centres partenaires</div>
         </div>
     </div>

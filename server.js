@@ -83,11 +83,70 @@ app.use(async (req, res, next) => {
 });
 
 // 5. Définir les routes
-app.get("/", (req, res) => {
-  res.render("home", { pageTitle: "Accueil - Don de Sang" });
+app.get("/", async (req, res) => {
+  try {
+    const Campaign = require('./models/campaign');
+    const Appointment = require('./models/Appointment');
+    const User = require('./models/user');
+    
+    // Calculer les statistiques réelles
+    const totalUsers = await User.countDocuments();
+    const totalDonations = await Appointment.countDocuments();
+    
+    // Calculer les vies potentiellement sauvées (1 don = 3 vies sauvées en moyenne)
+    const livesSaved = totalDonations * 3;
+    
+    // Compter les centres partenaires (estimation basée sur le nombre de campagnes)
+    const totalCampaigns = await Campaign.countDocuments();
+    const estimatedCenters = Math.max(Math.floor(totalCampaigns / 3), 5); // Minimum 5 centres
+    
+    res.render("home", { 
+      pageTitle: "Accueil - Don de Sang",
+      stats: {
+        totalUsers,
+        totalDonations,
+        livesSaved,
+        partnerCenters: estimatedCenters
+      }
+    });
+  } catch (err) {
+    console.error("Erreur lors du calcul des statistiques:", err);
+    // Valeurs par défaut en cas d'erreur
+    res.render("home", { 
+      pageTitle: "Accueil - Don de Sang",
+      stats: {
+        totalUsers: 0,
+        totalDonations: 0,
+        livesSaved: 0,
+        partnerCenters: 5
+      }
+    });
+  }
 });
 app.get("/about", (req, res) => {
   res.render("about", { pageTitle: "À propos - DonSang+" });
+});
+
+// Pages de support
+app.get("/aide", (req, res) => {
+  res.render("support/aide", { pageTitle: "Aide - DonSang+" });
+});
+
+app.get("/contact", (req, res) => {
+  res.render("support/contact", { pageTitle: "Contact - DonSang+" });
+});
+
+app.get("/faq", (req, res) => {
+  res.render("support/faq", { pageTitle: "FAQ - DonSang+" });
+});
+
+// Pages légales
+app.get("/confidentialite", (req, res) => {
+  res.render("legal/confidentialite", { pageTitle: "Politique de Confidentialité - DonSang+" });
+});
+
+app.get("/conditions", (req, res) => {
+  res.render("legal/conditions", { pageTitle: "Conditions d'Utilisation - DonSang+" });
 });
 
 // Routes API

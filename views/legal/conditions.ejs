@@ -1,0 +1,367 @@
+<style>
+    .terms-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+    }
+
+    .terms-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .terms-title {
+        color: #2d3748;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .terms-subtitle {
+        color: #718096;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+    .terms-content {
+        background: white;
+        padding: 3rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        line-height: 1.8;
+    }
+
+    .section-title {
+        color: #dc3545;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin: 2rem 0 1rem 0;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid #fee2e2;
+    }
+
+    .section-title:first-of-type {
+        margin-top: 0;
+    }
+
+    .subsection-title {
+        color: #2d3748;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 1.5rem 0 0.75rem 0;
+    }
+
+    .terms-content p {
+        color: #4a5568;
+        margin-bottom: 1rem;
+    }
+
+    .terms-content ul, .terms-content ol {
+        margin: 1rem 0 1rem 2rem;
+        color: #4a5568;
+    }
+
+    .terms-content li {
+        margin-bottom: 0.5rem;
+    }
+
+    .warning-box {
+        background: #fed7d7;
+        border: 1px solid #fc8181;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .warning-box h4 {
+        color: #c53030;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-box {
+        background: #ebf8ff;
+        border: 1px solid #90cdf4;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+    }
+
+    .info-box h4 {
+        color: #2b6cb0;
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .contact-section {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .contact-section h3 {
+        margin-bottom: 1rem;
+    }
+
+    .contact-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: white;
+        color: #dc3545;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .contact-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-decoration: none;
+        color: #dc3545;
+    }
+
+    .update-date {
+        text-align: right;
+        color: #718096;
+        font-style: italic;
+        margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+        .terms-container {
+            padding: 0 1rem;
+        }
+        
+        .terms-title {
+            font-size: 2rem;
+        }
+        
+        .terms-content {
+            padding: 2rem 1.5rem;
+        }
+    }
+</style>
+
+<div class="terms-container">
+    <div class="terms-header">
+        <h1 class="terms-title">Conditions d'Utilisation</h1>
+        <p class="terms-subtitle">
+            Ces conditions régissent votre utilisation de la plateforme DonSang+ pour le don de sang au Sénégal.
+        </p>
+    </div>
+
+    <div class="terms-content">
+        <div class="update-date">
+            <strong>Dernière mise à jour :</strong> 7 janvier 2025
+        </div>
+
+        <h2 class="section-title">1. Acceptation des Conditions</h2>
+        
+        <p>En utilisant la plateforme DonSang+, vous acceptez d'être lié par ces conditions d'utilisation. Si vous n'acceptez pas ces conditions, veuillez ne pas utiliser notre service.</p>
+
+        <p>Ces conditions s'appliquent à tous les utilisateurs de la plateforme, qu'ils soient donneurs, personnels médicaux ou administrateurs.</p>
+
+        <h2 class="section-title">2. Description du Service</h2>
+
+        <p>DonSang+ est une plateforme numérique qui facilite :</p>
+        <ul>
+            <li>L'inscription des donneurs de sang volontaires</li>
+            <li>La planification et la gestion des campagnes de don</li>
+            <li>La prise de rendez-vous pour les dons de sang</li>
+            <li>Le suivi de l'historique des dons</li>
+            <li>La géolocalisation des centres de don</li>
+        </ul>
+
+        <div class="info-box">
+            <h4>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Service Gratuit
+            </h4>
+            <p>L'utilisation de DonSang+ est entièrement gratuite pour tous les donneurs. Aucuns frais ne vous seront jamais facturés pour nos services.</p>
+        </div>
+
+        <h2 class="section-title">3. Inscription et Compte Utilisateur</h2>
+
+        <h3 class="subsection-title">Conditions d'inscription</h3>
+        <p>Pour créer un compte, vous devez :</p>
+        <ul>
+            <li>Être âgé(e) de 18 ans minimum</li>
+            <li>Fournir des informations exactes et complètes</li>
+            <li>Maintenir vos informations à jour</li>
+            <li>Respecter les critères médicaux d'aptitude au don</li>
+        </ul>
+
+        <h3 class="subsection-title">Responsabilité du compte</h3>
+        <p>Vous êtes responsable de :</p>
+        <ul>
+            <li>La confidentialité de vos identifiants de connexion</li>
+            <li>Toutes les activités effectuées avec votre compte</li>
+            <li>Signaler immédiatement tout usage non autorisé</li>
+            <li>Maintenir l'exactitude de vos informations médicales</li>
+        </ul>
+
+        <h2 class="section-title">4. Utilisation Acceptable</h2>
+
+        <h3 class="subsection-title">Vous vous engagez à :</h3>
+        <ul>
+            <li>Utiliser la plateforme uniquement à des fins légitimes de don de sang</li>
+            <li>Fournir des informations véridiques sur votre état de santé</li>
+            <li>Respecter les délais minimums entre les dons (2 mois)</li>
+            <li>Honorer vos rendez-vous ou les annuler avec préavis</li>
+            <li>Traiter les autres utilisateurs avec respect</li>
+        </ul>
+
+        <h3 class="subsection-title">Il est interdit de :</h3>
+        <ul>
+            <li>Créer plusieurs comptes avec les mêmes informations</li>
+            <li>Fournir de fausses informations médicales</li>
+            <li>Tenter d'accéder aux comptes d'autres utilisateurs</li>
+            <li>Utiliser la plateforme à des fins commerciales non autorisées</li>
+            <li>Perturber le fonctionnement du service</li>
+        </ul>
+
+        <div class="warning-box">
+            <h4>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                Sanctions
+            </h4>
+            <p>Le non-respect de ces conditions peut entraîner la suspension ou la fermeture de votre compte, ainsi que l'interdiction d'accès aux centres de don partenaires.</p>
+        </div>
+
+        <h2 class="section-title">5. Aspects Médicaux et Sécurité</h2>
+
+        <h3 class="subsection-title">Aptitude au don</h3>
+        <p>Votre aptitude au don de sang est déterminée par :</p>
+        <ul>
+            <li>L'entretien médical pré-don obligatoire</li>
+            <li>Vos antécédents médicaux</li>
+            <li>Votre état de santé au moment du don</li>
+            <li>Le respect des délais entre les dons</li>
+        </ul>
+
+        <h3 class="subsection-title">Responsabilité médicale</h3>
+        <p>Vous reconnaissez que :</p>
+        <ul>
+            <li>La décision finale d'aptitude appartient au médecin</li>
+            <li>Vous devez signaler tout changement de votre état de santé</li>
+            <li>Le don de sang comporte des risques minimes mais réels</li>
+            <li>Un suivi médical peut être nécessaire après le don</li>
+        </ul>
+
+        <h2 class="section-title">6. Protection des Données</h2>
+
+        <p>Vos données personnelles et médicales sont traitées selon notre <a href="/confidentialite" style="color: #dc3545; text-decoration: none;">Politique de Confidentialité</a>.</p>
+
+        <p>Points clés :</p>
+        <ul>
+            <li>Consentement explicite pour le traitement des données médicales</li>
+            <li>Partage limité aux professionnels de santé autorisés</li>
+            <li>Conservation selon les obligations légales</li>
+            <li>Droit d'accès, de rectification et de suppression</li>
+        </ul>
+
+        <h2 class="section-title">7. Disponibilité du Service</h2>
+
+        <h3 class="subsection-title">Maintenance et interruptions</h3>
+        <p>Nous nous efforçons d'assurer la disponibilité continue du service, mais nous nous réservons le droit de :</p>
+        <ul>
+            <li>Effectuer des maintenances programmées</li>
+            <li>Suspendre temporairement le service pour des raisons techniques</li>
+            <li>Modifier les fonctionnalités avec préavis</li>
+        </ul>
+
+        <h3 class="subsection-title">Support technique</h3>
+        <p>En cas de problème technique :</p>
+        <ul>
+            <li>Consultez notre <a href="/faq" style="color: #dc3545; text-decoration: none;">FAQ</a></li>
+            <li>Contactez notre support via le <a href="/contact" style="color: #dc3545; text-decoration: none;">formulaire de contact</a></li>
+            <li>Temps de réponse : 24-48h ouvrées</li>
+        </ul>
+
+        <h2 class="section-title">8. Limitation de Responsabilité</h2>
+
+        <p>Dans les limites autorisées par la loi :</p>
+        <ul>
+            <li>DonSang+ ne peut être tenu responsable des interruptions de service</li>
+            <li>Nous ne garantissons pas l'absence d'erreurs dans le système</li>
+            <li>Notre responsabilité est limitée à la fourniture de la plateforme</li>
+            <li>Les décisions médicales relèvent exclusivement des professionnels de santé</li>
+        </ul>
+
+        <h2 class="section-title">9. Résiliation</h2>
+
+        <h3 class="subsection-title">Par l'utilisateur</h3>
+        <p>Vous pouvez fermer votre compte à tout moment en :</p>
+        <ul>
+            <li>Nous contactant via le formulaire de contact</li>
+            <li>Demandant la suppression de vos données personnelles</li>
+        </ul>
+
+        <h3 class="subsection-title">Par DonSang+</h3>
+        <p>Nous pouvons fermer votre compte en cas de :</p>
+        <ul>
+            <li>Violation grave de ces conditions</li>
+            <li>Fraude ou falsification d'informations</li>
+            <li>Comportement dangereux pour la sécurité transfusionnelle</li>
+            <li>Inactivité prolongée (plus de 2 ans)</li>
+        </ul>
+
+        <h2 class="section-title">10. Modifications des Conditions</h2>
+
+        <p>Nous nous réservons le droit de modifier ces conditions d'utilisation. En cas de modification substantielle :</p>
+        <ul>
+            <li>Vous serez informé par email et/ou notification sur le site</li>
+            <li>Les nouvelles conditions entreront en vigueur 30 jours après notification</li>
+            <li>Votre utilisation continue du service vaut acceptation des nouvelles conditions</li>
+        </ul>
+
+        <h2 class="section-title">11. Droit Applicable et Juridiction</h2>
+
+        <p>Ces conditions sont régies par le droit sénégalais. Tout litige relève de la compétence exclusive des tribunaux de Dakar.</p>
+
+        <p>En cas de litige, nous encourageons une résolution amiable par médiation avant toute action judiciaire.</p>
+
+        <h2 class="section-title">12. Contact</h2>
+
+        <p>Pour toute question concernant ces conditions :</p>
+        <ul>
+            <li><strong>Email :</strong> legal@donsang.sn</li>
+            <li><strong>Adresse :</strong> Centre National de Transfusion Sanguine, Dakar, Sénégal</li>
+            <li><strong>Formulaire :</strong> <a href="/contact" style="color: #dc3545; text-decoration: none;">Nous contacter</a></li>
+        </ul>
+    </div>
+
+    <div class="contact-section">
+        <h3>Questions sur nos conditions ?</h3>
+        <p>Notre équipe juridique est à votre disposition</p>
+        <a href="/contact" class="contact-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            Nous contacter
+        </a>
+    </div>
+</div>
